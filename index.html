@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Epistola - Lettre d'information pour EPLE</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { display: flex; height: 100vh; background: #f1f5f9; color: #334155; }
+    
+    .editor { width: 44%; padding: 20px; overflow-y: auto; background: #ffffff; border-right: 1px solid #e2e8f0; }
+    .editor h2 { font-size: 1.2rem; margin-bottom: 15px; color: #0f172a; }
+    .editor h3 { font-size: 0.95rem; color: #1e293b; margin: 15px 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: #475569; }
+    .form-group input, .form-group textarea { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; }
+    .form-group textarea { resize: vertical; min-height: 55px; }
+    
+    .dynamic-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 10px; }
+    .btn-remove { background: #ef4444; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; }
+    .btn-remove:hover { background: #dc2626; }
+    .btn-add { background: #e2e8f0; color: #1e293b; border: 1px dashed #cbd5e1; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+    .btn-add:hover { background: #cbd5e1; }
+
+    .actions { display: flex; gap: 8px; margin-top: 15px; flex-wrap: wrap; }
+    .btn { color: #fff; border: none; padding: 10px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-copy { background: #2563eb; }
+    .btn-copy:hover { background: #1d4ed8; }
+    .btn-print { background: #0f172a; }
+    .btn-print:hover { background: #1e293b; }
+    .btn-pdf { background: #059669; }
+    .btn-pdf:hover { background: #047857; }
+
+    .preview-container { 
+      width: 56%; 
+      padding: 20px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      height: 100vh;
+    }
+    .preview-title { font-size: 1rem; font-weight: 600; margin-bottom: 12px; align-self: flex-start; color: #64748b; }
+    
+    .preview-scroll-wrapper {
+      width: 100%;
+      max-width: 640px;
+      max-height: calc(100vh - 80px);
+      overflow-y: scroll;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      border: 1px solid #cbd5e1;
+      padding: 10px;
+    }
+
+    .preview-scroll-wrapper::-webkit-scrollbar { width: 8px; }
+    .preview-scroll-wrapper::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+    .preview-scroll-wrapper::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+    .preview-scroll-wrapper::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+    #email-preview { width: 100%; }
+
+    @media print {
+      body {
+        background: #ffffff;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .editor, .preview-title, .actions { display: none !important; }
+      .preview-container { width: 100% !important; padding: 0 !important; height: auto !important; }
+      .preview-scroll-wrapper { max-height: none !important; overflow: visible !important; border: none !important; box-shadow: none !important; }
+      #email-preview { max-width: 620px !important; margin: auto !important; }
+      @page { size: A4; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ÉDITEUR -->
+  <div class="editor">
+    <h2>Epistola - Lettre d'information pour EPLE</h2>
+    
+    <div class="form-group">
+      <label>Établissement</label>
+      <input type="text" id="in-school" value="Lycée X" oninput="renderNewsletter()">
+    </div>
+    <div class="form-group">
+      <label>Titre Principal de l'édition</label>
+      <input type="text" id="in-title" value="La Lettre des Personnels — Septembre 2026" oninput="renderNewsletter()">
+    </div>
+
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+    <!-- SECTION EDITO -->
+    <div class="form-group">
+      <label>Titre de la section Mot de la Direction</label>
+      <input type="text" id="in-edito-header" value="Note de la Direction" oninput="renderNewsletter()">
+    </div>
+    <div class="form-group">
+      <label>Contenu du Mot de la Direction</label>
+      <textarea id="in-editorial" oninput="renderNewsletter()">Chers collègues, bienvenue à toutes et tous pour cette nouvelle rentrée. Vous trouverez ci-dessous le calendrier des premières instances, les rappels de procédures administratives et les informations logistiques de l'établissement.</textarea>
+    </div>
+
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+    <!-- SECTION AGENDA -->
+    <div class="form-group">
+      <label>Titre de la section Agenda</label>
+      <input type="text" id="in-agenda-header" value="📅 Agenda des Instances & Réunions" oninput="renderNewsletter()">
+    </div>
+    <div class="form-group">
+      <label>Événements de l'agenda (1 ligne / événement)</label>
+      <textarea id="in-agenda" oninput="renderNewsletter()">10 Sept. (17h00) : Conseil d'Administration d'installation
+17 Sept. (16h00) : Commission Hygiène et Sécurité (CHS)
+24 Sept. : Date limite de saisie des fiches de vœux d'emploi du temps</textarea>
+    </div>
+
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+    <!-- SECTION CONSIGNES -->
+    <div class="form-group">
+      <label>Titre de la section Consignes & Organisation</label>
+      <input type="text" id="in-actu-header" value="Consignes & Organisation" oninput="renderNewsletter()">
+    </div>
+    <h3>Éléments de consignes <button class="btn-add" onclick="addActuBlock()">+ Ajouter</button></h3>
+    <div id="actu-container"></div>
+
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+    <!-- SECTION RH -->
+    <div class="form-group">
+      <label>Titre de la section RH / Service Général</label>
+      <input type="text" id="in-rh-header" value="Notes RH & Services Généraux" oninput="renderNewsletter()">
+    </div>
+    <h3>Notes RH / Informations <button class="btn-add" onclick="addRhBlock()">+ Ajouter</button></h3>
+    <div id="rh-container"></div>
+
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+    <div class="form-group">
+      <label>Texte du bouton d'accès rapide</label>
+      <input type="text" id="in-btn-label" value="Accéder au Réseau Interne / ENT" oninput="renderNewsletter()">
+    </div>
+    <div class="form-group">
+      <label>Lien URL d'accès rapide</label>
+      <input type="text" id="in-link" value="https://ent.fr/espace-personnels" oninput="renderNewsletter()">
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-copy" onclick="copyHTML()">📋 Copier HTML</button>
+      <button class="btn btn-pdf" onclick="exportPDF_HD()">⚡ Export PDF</button>
+      <button class="btn btn-print" onclick="printNative()">🖨️ Imprimer (beta)</button>
+    </div>
+  </div>
+
+  <!-- APERÇU -->
+  <div class="preview-container">
+    <div class="preview-title">Aperçu du rendu final</div>
+    <div class="preview-scroll-wrapper">
+      <div id="email-preview"></div>
+    </div>
+  </div>
+
+  <script>
+    let actuBlocks = [
+      { title: "Procédure d'Organisation des Sorties et Voyages Scolaires", body: "Les dossiers de demande de sortie ou voyage pour le premier semestre doivent être déposés au secrétariat de direction au plus tard le 15 octobre. Merci de compléter le formulaire RH disponible sur le réseau partagé." }
+    ];
+
+    let rhBlocks = [
+      { title: "Formations PAF & Prise en charge des frais", body: "La campagne d'inscription aux modules du Plan Académique de Formation est ouverte. Pensez à faire valider vos demandes par la direction avant la clôture du serveur." }
+    ];
+
+    function renderEditorBlocks() {
+      const actuContainer = document.getElementById('actu-container');
+      actuContainer.innerHTML = actuBlocks.map((b, i) => `
+        <div class="dynamic-card">
+          <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+            <strong style="font-size:0.75rem; color:#64748b;">Consigne #${i+1}</strong>
+            <button class="btn-remove" onclick="removeActuBlock(${i})">Supprimer</button>
+          </div>
+          <input type="text" value="${b.title}" placeholder="Sous-titre..." oninput="actuBlocks[${i}].title=this.value; renderNewsletter();" style="width:100%; margin-bottom:6px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <textarea placeholder="Contenu..." oninput="actuBlocks[${i}].body=this.value; renderNewsletter();" style="width:100%; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px; min-height:45px;">${b.body}</textarea>
+        </div>
+      `).join('');
+
+      const rhContainer = document.getElementById('rh-container');
+      rhContainer.innerHTML = rhBlocks.map((b, i) => `
+        <div class="dynamic-card">
+          <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+            <strong style="font-size:0.75rem; color:#64748b;">Note #${i+1}</strong>
+            <button class="btn-remove" onclick="removeRhBlock(${i})">Supprimer</button>
+          </div>
+          <input type="text" value="${b.title}" placeholder="Sous-titre..." oninput="rhBlocks[${i}].title=this.value; renderNewsletter();" style="width:100%; margin-bottom:6px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <textarea placeholder="Contenu..." oninput="rhBlocks[${i}].body=this.value; renderNewsletter();" style="width:100%; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px; min-height:45px;">${b.body}</textarea>
+        </div>
+      `).join('');
+    }
+
+    function addActuBlock() {
+      actuBlocks.push({ title: "Nouvelle consigne", body: "Précisez ici les modalités..." });
+      renderEditorBlocks();
+      renderNewsletter();
+    }
+
+    function removeActuBlock(index) {
+      actuBlocks.splice(index, 1);
+      renderEditorBlocks();
+      renderNewsletter();
+    }
+
+    function addRhBlock() {
+      rhBlocks.push({ title: "Nouvelle note", body: "Saisissez votre note de service..." });
+      renderEditorBlocks();
+      renderNewsletter();
+    }
+
+    function removeRhBlock(index) {
+      rhBlocks.splice(index, 1);
+      renderEditorBlocks();
+      renderNewsletter();
+    }
+
+    function renderNewsletter() {
+      const school = document.getElementById('in-school').value;
+      const title = document.getElementById('in-title').value;
+      const editoHeader = document.getElementById('in-edito-header').value;
+      const editorial = document.getElementById('in-editorial').value.replace(/\n/g, '<br>');
+      const agendaHeader = document.getElementById('in-agenda-header').value;
+      const agenda = document.getElementById('in-agenda').value.split('\n').filter(line => line.trim() !== '');
+      const actuHeader = document.getElementById('in-actu-header').value;
+      const rhHeader = document.getElementById('in-rh-header').value;
+      const btnLabel = document.getElementById('in-btn-label').value;
+      const link = document.getElementById('in-link').value;
+
+      const agendaHTML = agenda.map(item => `
+        <li style="margin-bottom: 8px; color: #334155; font-size: 13px; line-height: 1.4;">${item}</li>
+      `).join('');
+
+      const actuHTML = actuBlocks.length > 0 ? `
+        <tr>
+          <td style="padding: 0 30px 20px 30px;">
+            ${actuHeader ? `<h2 style="color: #0f172a; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${actuHeader}</h2>` : ''}
+            ${actuBlocks.map(b => `
+              <div style="margin-bottom: 12px;">
+                <h3 style="color: #1e40af; font-size: 14px; margin: 0 0 4px 0;">${b.title}</h3>
+                <p style="color: #475569; font-size: 13px; line-height: 1.5; margin: 0;">${b.body.replace(/\n/g, '<br>')}</p>
+              </div>
+            `).join('')}
+          </td>
+        </tr>
+      ` : '';
+
+      const rhHTML = rhBlocks.length > 0 ? `
+        <tr>
+          <td style="padding: 0 30px 24px 30px;">
+            ${rhHeader ? `<h2 style="color: #0f172a; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${rhHeader}</h2>` : ''}
+            ${rhBlocks.map(b => `
+              <div style="background-color: #fffbebfb; border: 1px solid #fef08a; border-radius: 6px; padding: 14px; margin-bottom: 10px;">
+                <h3 style="color: #854d0e; font-size: 13.5px; margin: 0 0 4px 0;">📌 ${b.title}</h3>
+                <p style="color: #713f12; font-size: 13px; line-height: 1.5; margin: 0;">${b.body.replace(/\n/g, '<br>')}</p>
+              </div>
+            `).join('')}
+          </td>
+        </tr>
+      ` : '';
+
+      const htmlTemplate = `
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+          <tr>
+            <td align="center" valign="middle" style="padding: 10px 0;">
+              <table width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1; text-align: left;">
+                
+                <!-- En-tête -->
+                <tr>
+                  <td style="background-color: #0f172a; padding: 25px 30px; text-align: left;">
+                    <p style="color: #94a3b8; font-size: 11px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 4px 0;">Communication Interne — ${school}</p>
+                    <h1 style="color: #ffffff; font-size: 18px; font-weight: 700; margin: 0;">${title}</h1>
+                  </td>
+                </tr>
+
+                <!-- Note de la Direction -->
+                <tr>
+                  <td style="padding: 24px 30px; background-color: #ffffff;">
+                    ${editoHeader ? `<h2 style="color: #0f172a; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${editoHeader}</h2>` : ''}
+                    <p style="color: #334155; font-size: 13.5px; line-height: 1.6; margin: 0;">${editorial}</p>
+                  </td>
+                </tr>
+
+                <!-- Agenda -->
+                ${agenda.length > 0 ? `
+                <tr>
+                  <td style="padding: 0 30px 20px 30px;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; border-radius: 6px; padding: 18px; border-left: 4px solid #2563eb;">
+                      <tr>
+                        <td>
+                          ${agendaHeader ? `<h2 style="color: #0f172a; font-size: 14px; margin: 0 0 10px 0;">${agendaHeader}</h2>` : ''}
+                          <ul style="margin: 0; padding-left: 18px;">${agendaHTML}</ul>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                ` : ''}
+
+                <!-- Consignes & Organisation -->
+                ${actuHTML}
+
+                <!-- Notes RH / Logistique -->
+                ${rhHTML}
+
+                <!-- Bouton d'accès rapide -->
+                ${btnLabel ? `
+                <tr>
+                  <td align="center" style="padding: 0 30px 25px 30px;">
+                    <a href="${link}" target="_blank" style="background-color: #0f172a; color: #ffffff; padding: 10px 20px; border-radius: 5px; font-weight: 600; font-size: 13px; text-decoration: none; display: inline-block;">${btnLabel}</a>
+                  </td>
+                </tr>
+                ` : ''}
+
+                <!-- Pied de page -->
+                <tr>
+                  <td style="background-color: #f8fafc; padding: 12px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
+                    <p style="color: #94a3b8; font-size: 11px; margin: 0;">Diffusion interne — ${school} — Réservé aux personnels de l'établissement.</p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
+      `;
+
+      document.getElementById('email-preview').innerHTML = htmlTemplate;
+    }
+
+    function copyHTML() {
+      const htmlContent = document.getElementById('email-preview').innerHTML;
+      navigator.clipboard.writeText(htmlContent).then(() => {
+        alert('Code HTML copié !');
+      });
+    }
+
+    function printNative() {
+      window.print();
+    }
+
+    function exportPDF_HD() {
+      const preview = document.getElementById('email-preview');
+      const title = document.getElementById('in-title').value || 'newsletter_personnels';
+
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex';
+      wrapper.style.justifyContent = 'center';
+      wrapper.style.alignItems = 'center';
+      wrapper.style.minHeight = '275mm';
+      wrapper.style.width = '100%';
+      wrapper.style.backgroundColor = '#ffffff';
+
+      const clone = preview.cloneNode(true);
+      clone.style.boxShadow = 'none';
+      clone.style.margin = 'auto';
+      wrapper.appendChild(clone);
+      
+      document.body.appendChild(wrapper);
+
+      const opt = {
+        margin:       [10, 10, 10, 10],
+        filename:     `${title.toLowerCase().replace(/[^a-z0-9]/gi, '_')}.pdf`,
+        image:        { type: 'png', quality: 1.0 },
+        html2canvas:  { scale: 4, useCORS: true, logging: false, dpi: 300, letterRendering: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(wrapper).save().then(() => {
+        document.body.removeChild(wrapper);
+      });
+    }
+
+    renderEditorBlocks();
+    renderNewsletter();
+  </script>
+</body>
+</html>
