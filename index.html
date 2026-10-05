@@ -14,9 +14,13 @@
     .editor h3 { font-size: 0.95rem; color: #1e293b; margin: 15px 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: #475569; }
-    .form-group input, .form-group textarea { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; }
     .form-group textarea { resize: vertical; min-height: 55px; }
     
+    .color-pickers { display: flex; gap: 15px; margin-bottom: 12px; }
+    .color-box { flex: 1; }
+    .color-box input[type="color"] { height: 38px; padding: 2px; cursor: pointer; }
+
     .dynamic-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 10px; }
     .btn-remove { background: #ef4444; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; }
     .btn-remove:hover { background: #dc2626; }
@@ -57,7 +61,6 @@
     .preview-scroll-wrapper::-webkit-scrollbar { width: 8px; }
     .preview-scroll-wrapper::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
     .preview-scroll-wrapper::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-    .preview-scroll-wrapper::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
     #email-preview { width: 100%; }
 
@@ -85,6 +88,28 @@
   <div class="editor">
     <h2>Epistola - Lettre d'information pour EPLE</h2>
     
+    <!-- PERSONNALISATION VISUELLE -->
+    <div class="color-pickers">
+      <div class="color-box">
+        <label style="font-size:0.75rem; font-weight:600;">Couleur Principale</label>
+        <input type="color" id="in-color-primary" value="#0f172a" oninput="renderNewsletter()">
+      </div>
+      <div class="color-box">
+        <label style="font-size:0.75rem; font-weight:600;">Couleur Accent (boutons, icônes)</label>
+        <input type="color" id="in-color-accent" value="#2563eb" oninput="renderNewsletter()">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Bandeau d'en-tête (Photo ou illustration établissement)</label>
+      <input type="file" id="in-banner" accept="image/*" onchange="handleImageUpload(event, 'banner')">
+    </div>
+
+    <div class="form-group">
+      <label>Logo de l'établissement (optionnel)</label>
+      <input type="file" id="in-logo" accept="image/*" onchange="handleImageUpload(event, 'logo')">
+    </div>
+
     <div class="form-group">
       <label>Établissement</label>
       <input type="text" id="in-school" value="Lycée X" oninput="renderNewsletter()">
@@ -98,11 +123,11 @@
 
     <!-- SECTION EDITO -->
     <div class="form-group">
-      <label>Titre de la section Mot de la Direction</label>
+      <label>Titre de l'éditorial</label>
       <input type="text" id="in-edito-header" value="Note de la Direction" oninput="renderNewsletter()">
     </div>
     <div class="form-group">
-      <label>Contenu du Mot de la Direction</label>
+      <label>Contenu de l'éditorial</label>
       <textarea id="in-editorial" oninput="renderNewsletter()">Chers collègues, bienvenue à toutes et tous pour cette nouvelle rentrée. Vous trouverez ci-dessous le calendrier des premières instances, les rappels de procédures administratives et les informations logistiques de l'établissement.</textarea>
     </div>
 
@@ -124,7 +149,7 @@
 
     <!-- SECTION CONSIGNES -->
     <div class="form-group">
-      <label>Titre de la section Consignes & Organisation</label>
+      <label>Titre de la section Organisation</label>
       <input type="text" id="in-actu-header" value="Consignes & Organisation" oninput="renderNewsletter()">
     </div>
     <h3>Éléments de consignes <button class="btn-add" onclick="addActuBlock()">+ Ajouter</button></h3>
@@ -134,7 +159,7 @@
 
     <!-- SECTION RH -->
     <div class="form-group">
-      <label>Titre de la section RH / Service Général</label>
+      <label>Titre de la section RH</label>
       <input type="text" id="in-rh-header" value="Notes RH & Services Généraux" oninput="renderNewsletter()">
     </div>
     <h3>Notes RH / Informations <button class="btn-add" onclick="addRhBlock()">+ Ajouter</button></h3>
@@ -167,23 +192,40 @@
   </div>
 
   <script>
+    let bannerData = '';
+    let logoData = '';
+
     let actuBlocks = [
-      { title: "Procédure d'Organisation des Sorties et Voyages Scolaires", body: "Les dossiers de demande de sortie ou voyage pour le premier semestre doivent être déposés au secrétariat de direction au plus tard le 15 octobre. Merci de compléter le formulaire RH disponible sur le réseau partagé." }
+      { badge: "Important", title: "Procédure d'Organisation des Sorties", body: "Les dossiers doivent être déposés au secrétariat de direction au plus tard le 15 octobre via le formulaire RH." }
     ];
 
     let rhBlocks = [
-      { title: "Formations PAF & Prise en charge des frais", body: "La campagne d'inscription aux modules du Plan Académique de Formation est ouverte. Pensez à faire valider vos demandes par la direction avant la clôture du serveur." }
+      { badge: "Formation", title: "Plan Académique de Formation (PAF)", body: "La campagne d'inscription est ouverte. Pensez à faire valider vos demandes avant la clôture du serveur." }
     ];
+
+    // Conversion d'une image locale en Base64
+    function handleImageUpload(e, type) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        if (type === 'banner') bannerData = event.target.result;
+        if (type === 'logo') logoData = event.target.result;
+        renderNewsletter();
+      };
+      reader.readAsDataURL(file);
+    }
 
     function renderEditorBlocks() {
       const actuContainer = document.getElementById('actu-container');
       actuContainer.innerHTML = actuBlocks.map((b, i) => `
         <div class="dynamic-card">
           <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-            <strong style="font-size:0.75rem; color:#64748b;">Consigne #${i+1}</strong>
+            <strong style="font-size:0.75rem; color:#64748b;">Élément #${i+1}</strong>
             <button class="btn-remove" onclick="removeActuBlock(${i})">Supprimer</button>
           </div>
-          <input type="text" value="${b.title}" placeholder="Sous-titre..." oninput="actuBlocks[${i}].title=this.value; renderNewsletter();" style="width:100%; margin-bottom:6px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <input type="text" value="${b.badge || ''}" placeholder="Badge (ex: Important, Rappel, Stage)" oninput="actuBlocks[${i}].badge=this.value; renderNewsletter();" style="width:100%; margin-bottom:5px; padding:5px; font-size:0.75rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <input type="text" value="${b.title}" placeholder="Titre..." oninput="actuBlocks[${i}].title=this.value; renderNewsletter();" style="width:100%; margin-bottom:5px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
           <textarea placeholder="Contenu..." oninput="actuBlocks[${i}].body=this.value; renderNewsletter();" style="width:100%; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px; min-height:45px;">${b.body}</textarea>
         </div>
       `).join('');
@@ -195,14 +237,15 @@
             <strong style="font-size:0.75rem; color:#64748b;">Note #${i+1}</strong>
             <button class="btn-remove" onclick="removeRhBlock(${i})">Supprimer</button>
           </div>
-          <input type="text" value="${b.title}" placeholder="Sous-titre..." oninput="rhBlocks[${i}].title=this.value; renderNewsletter();" style="width:100%; margin-bottom:6px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <input type="text" value="${b.badge || ''}" placeholder="Badge (ex: RH, Logistique, Prévention)" oninput="rhBlocks[${i}].badge=this.value; renderNewsletter();" style="width:100%; margin-bottom:5px; padding:5px; font-size:0.75rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <input type="text" value="${b.title}" placeholder="Titre..." oninput="rhBlocks[${i}].title=this.value; renderNewsletter();" style="width:100%; margin-bottom:5px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
           <textarea placeholder="Contenu..." oninput="rhBlocks[${i}].body=this.value; renderNewsletter();" style="width:100%; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px; min-height:45px;">${b.body}</textarea>
         </div>
       `).join('');
     }
 
     function addActuBlock() {
-      actuBlocks.push({ title: "Nouvelle consigne", body: "Précisez ici les modalités..." });
+      actuBlocks.push({ badge: "Info", title: "Nouvelle consigne", body: "Précisez ici les modalités..." });
       renderEditorBlocks();
       renderNewsletter();
     }
@@ -214,7 +257,7 @@
     }
 
     function addRhBlock() {
-      rhBlocks.push({ title: "Nouvelle note", body: "Saisissez votre note de service..." });
+      rhBlocks.push({ badge: "RH", title: "Nouvelle note", body: "Saisissez votre note de service..." });
       renderEditorBlocks();
       renderNewsletter();
     }
@@ -226,6 +269,8 @@
     }
 
     function renderNewsletter() {
+      const primaryColor = document.getElementById('in-color-primary').value;
+      const accentColor = document.getElementById('in-color-accent').value;
       const school = document.getElementById('in-school').value;
       const title = document.getElementById('in-title').value;
       const editoHeader = document.getElementById('in-edito-header').value;
@@ -244,10 +289,13 @@
       const actuHTML = actuBlocks.length > 0 ? `
         <tr>
           <td style="padding: 0 30px 20px 30px;">
-            ${actuHeader ? `<h2 style="color: #0f172a; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${actuHeader}</h2>` : ''}
+            ${actuHeader ? `<h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${actuHeader}</h2>` : ''}
             ${actuBlocks.map(b => `
-              <div style="margin-bottom: 12px;">
-                <h3 style="color: #1e40af; font-size: 14px; margin: 0 0 4px 0;">${b.title}</h3>
+              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 10px;">
+                <div style="margin-bottom: 4px;">
+                  ${b.badge ? `<span style="background-color: ${accentColor}; color: #ffffff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; margin-right: 6px;">${b.badge}</span>` : ''}
+                  <strong style="color: #0f172a; font-size: 13.5px;">${b.title}</strong>
+                </div>
                 <p style="color: #475569; font-size: 13px; line-height: 1.5; margin: 0;">${b.body.replace(/\n/g, '<br>')}</p>
               </div>
             `).join('')}
@@ -258,11 +306,14 @@
       const rhHTML = rhBlocks.length > 0 ? `
         <tr>
           <td style="padding: 0 30px 24px 30px;">
-            ${rhHeader ? `<h2 style="color: #0f172a; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${rhHeader}</h2>` : ''}
+            ${rhHeader ? `<h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${rhHeader}</h2>` : ''}
             ${rhBlocks.map(b => `
-              <div style="background-color: #fffbebfb; border: 1px solid #fef08a; border-radius: 6px; padding: 14px; margin-bottom: 10px;">
-                <h3 style="color: #854d0e; font-size: 13.5px; margin: 0 0 4px 0;">📌 ${b.title}</h3>
-                <p style="color: #713f12; font-size: 13px; line-height: 1.5; margin: 0;">${b.body.replace(/\n/g, '<br>')}</p>
+              <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 4px; padding: 12px; margin-bottom: 10px;">
+                <div style="margin-bottom: 4px;">
+                  ${b.badge ? `<span style="background-color: #f59e0b; color: #ffffff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; margin-right: 6px;">${b.badge}</span>` : ''}
+                  <strong style="color: #92400e; font-size: 13.5px;">${b.title}</strong>
+                </div>
+                <p style="color: #78350f; font-size: 13px; line-height: 1.5; margin: 0;">${b.body.replace(/\n/g, '<br>')}</p>
               </div>
             `).join('')}
           </td>
@@ -275,18 +326,38 @@
             <td align="center" valign="middle" style="padding: 10px 0;">
               <table width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1; text-align: left;">
                 
+                <!-- Bandeau Image (si présent) -->
+                ${bannerData ? `
+                <tr>
+                  <td style="line-height: 0; padding: 0;">
+                    <img src="${bannerData}" alt="Bandeau" style="width: 100%; max-height: 160px; object-fit: cover; display: block;">
+                  </td>
+                </tr>
+                ` : ''}
+
                 <!-- En-tête -->
                 <tr>
-                  <td style="background-color: #0f172a; padding: 25px 30px; text-align: left;">
-                    <p style="color: #94a3b8; font-size: 11px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 4px 0;">Communication Interne — ${school}</p>
-                    <h1 style="color: #ffffff; font-size: 18px; font-weight: 700; margin: 0;">${title}</h1>
+                  <td style="background-color: ${primaryColor}; padding: 22px 30px;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td valign="middle">
+                          <p style="color: #94a3b8; font-size: 11px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 4px 0;">Communication Interne — ${school}</p>
+                          <h1 style="color: #ffffff; font-size: 18px; font-weight: 700; margin: 0;">${title}</h1>
+                        </td>
+                        ${logoData ? `
+                        <td align="right" valign="middle" style="width: 70px;">
+                          <img src="${logoData}" alt="Logo" style="max-height: 55px; max-width: 65px; border-radius: 4px; background: #ffffff; padding: 2px;">
+                        </td>
+                        ` : ''}
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 
                 <!-- Note de la Direction -->
                 <tr>
                   <td style="padding: 24px 30px; background-color: #ffffff;">
-                    ${editoHeader ? `<h2 style="color: #0f172a; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${editoHeader}</h2>` : ''}
+                    ${editoHeader ? `<h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${editoHeader}</h2>` : ''}
                     <p style="color: #334155; font-size: 13.5px; line-height: 1.6; margin: 0;">${editorial}</p>
                   </td>
                 </tr>
@@ -295,7 +366,7 @@
                 ${agenda.length > 0 ? `
                 <tr>
                   <td style="padding: 0 30px 20px 30px;">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; border-radius: 6px; padding: 18px; border-left: 4px solid #2563eb;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; border-radius: 6px; padding: 18px; border-left: 4px solid ${accentColor};">
                       <tr>
                         <td>
                           ${agendaHeader ? `<h2 style="color: #0f172a; font-size: 14px; margin: 0 0 10px 0;">${agendaHeader}</h2>` : ''}
@@ -317,7 +388,7 @@
                 ${btnLabel ? `
                 <tr>
                   <td align="center" style="padding: 0 30px 25px 30px;">
-                    <a href="${link}" target="_blank" style="background-color: #0f172a; color: #ffffff; padding: 10px 20px; border-radius: 5px; font-weight: 600; font-size: 13px; text-decoration: none; display: inline-block;">${btnLabel}</a>
+                    <a href="${link}" target="_blank" style="background-color: ${accentColor}; color: #ffffff; padding: 11px 22px; border-radius: 5px; font-weight: 600; font-size: 13px; text-decoration: none; display: inline-block;">${btnLabel}</a>
                   </td>
                 </tr>
                 ` : ''}
