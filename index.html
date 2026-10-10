@@ -10,14 +10,101 @@
     body { display: flex; height: 100vh; background: #f1f5f9; color: #334155; }
     
     .editor { width: 44%; padding: 20px; overflow-y: auto; background: #ffffff; border-right: 1px solid #e2e8f0; }
-    .editor h2 { font-size: 1.2rem; margin-bottom: 15px; color: #0f172a; }
+    .editor h2 { font-size: 1.2rem; margin-bottom: 12px; color: #0f172a; }
     .editor h3 { font-size: 0.95rem; color: #1e293b; margin: 15px 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
+    
+    .storage-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 15px;
+      background: #f8fafc;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-tool {
+      background: #ffffff;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-tool:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    .status-save {
+      font-size: 0.72rem;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+      font-weight: 500;
+    }
+
     .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: #475569; }
+    .form-group label { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: #475569; }
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; }
     .form-group textarea { resize: vertical; min-height: 55px; }
     
-    .color-pickers { display: flex; gap: 15px; margin-bottom: 12px; }
+    .tooltip-container {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .tooltip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background-color: #cbd5e1;
+      color: #1e293b;
+      font-size: 11px;
+      font-weight: bold;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+    .tooltip-container:hover .tooltip-icon {
+      background-color: #2563eb;
+      color: #ffffff;
+    }
+    .tooltip-box {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      top: -8px;
+      left: 24px;
+      width: 260px;
+      background-color: #0f172a;
+      color: #f8fafc;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.73rem;
+      line-height: 1.4;
+      font-weight: normal;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      z-index: 100;
+      transition: opacity 0.2s, visibility 0.2s;
+      pointer-events: none;
+    }
+    .tooltip-container:hover .tooltip-box {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .color-pickers { display: flex; gap: 10px; margin-bottom: 12px; }
     .color-box { flex: 1; }
     .color-box input[type="color"] { height: 38px; padding: 2px; cursor: pointer; }
 
@@ -27,14 +114,67 @@
     .btn-add { background: #e2e8f0; color: #1e293b; border: 1px dashed #cbd5e1; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
     .btn-add:hover { background: #cbd5e1; }
 
-    .actions { display: flex; gap: 8px; margin-top: 15px; flex-wrap: wrap; }
-    .btn { color: #fff; border: none; padding: 10px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 6px; }
-    .btn-copy { background: #2563eb; }
-    .btn-copy:hover { background: #1d4ed8; }
-    .btn-print { background: #0f172a; }
-    .btn-print:hover { background: #1e293b; }
-    .btn-pdf { background: #059669; }
-    .btn-pdf:hover { background: #047857; }
+    .agenda-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+    .agenda-inputs-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+      align-items: center;
+    }
+
+    .attachments-summary-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 15px;
+    }
+    .attachments-summary-box h4 {
+      font-size: 0.85rem;
+      color: #1e40af;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .attachments-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.8rem;
+    }
+    .attachments-list li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 0;
+      color: #1e3a8a;
+    }
+
+    .actions { margin-top: 18px; }
+    .btn-pdf-unique {
+      width: 100%;
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .btn-pdf-unique:hover { background: #047857; }
 
     .preview-container { 
       width: 56%; 
@@ -48,37 +188,27 @@
     
     .preview-scroll-wrapper {
       width: 100%;
-      max-width: 640px;
       max-height: calc(100vh - 80px);
       overflow-y: scroll;
+      overflow-x: auto;
       background: #ffffff;
       border-radius: 8px;
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       border: 1px solid #cbd5e1;
-      padding: 10px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
     }
 
-    .preview-scroll-wrapper::-webkit-scrollbar { width: 8px; }
+    .preview-scroll-wrapper::-webkit-scrollbar { width: 8px; height: 8px; }
     .preview-scroll-wrapper::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
     .preview-scroll-wrapper::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
 
-    #email-preview { width: 100%; }
+    #email-preview { width: 680px; }
 
-    @media print {
-      body {
-        background: #ffffff;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        min-height: 100vh !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-      .editor, .preview-title, .actions { display: none !important; }
-      .preview-container { width: 100% !important; padding: 0 !important; height: auto !important; }
-      .preview-scroll-wrapper { max-height: none !important; overflow: visible !important; border: none !important; box-shadow: none !important; }
-      #email-preview { max-width: 620px !important; margin: auto !important; }
-      @page { size: A4; margin: 0; }
+    .pdf-no-break {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
     }
   </style>
 </head>
@@ -88,69 +218,108 @@
   <div class="editor">
     <h2>Epistola - Lettre d'information pour EPLE</h2>
     
-    <!-- PERSONNALISATION VISUELLE -->
+    <div class="storage-bar">
+      <button class="btn-tool" onclick="exportDataToFile()" title="Enregistrer l'état du document dans un fichier">💾 Exporter sauvegarde (.json)</button>
+      <button class="btn-tool" onclick="document.getElementById('import-file-input').click()" title="Reprendre un document précédemment enregistré">📂 Charger document</button>
+      <input type="file" id="import-file-input" accept=".json" style="display:none;" onchange="importDataFromFile(event)">
+      <button class="btn-tool" onclick="resetToDefault()" style="color:#ef4444;" title="Remettre à zéro">🔄 Nouveau</button>
+      <div class="status-save" id="save-status">● Brouillon synchronisé</div>
+    </div>
+
+    <!-- COULEURS -->
     <div class="color-pickers">
       <div class="color-box">
         <label style="font-size:0.75rem; font-weight:600;">Couleur Principale</label>
-        <input type="color" id="in-color-primary" value="#0f172a" oninput="renderNewsletter()">
+        <input type="color" id="in-color-primary" value="#0f172a" oninput="saveAndRender()">
       </div>
       <div class="color-box">
-        <label style="font-size:0.75rem; font-weight:600;">Couleur Accent (boutons, icônes)</label>
-        <input type="color" id="in-color-accent" value="#2563eb" oninput="renderNewsletter()">
+        <label style="font-size:0.75rem; font-weight:600;">Accent Instances/RH</label>
+        <input type="color" id="in-color-accent" value="#2563eb" oninput="saveAndRender()">
+      </div>
+      <div class="color-box">
+        <label style="font-size:0.75rem; font-weight:600;">Action Pédagogique</label>
+        <input type="color" id="in-color-pedago" value="#7c3aed" oninput="saveAndRender()">
       </div>
     </div>
 
     <div class="form-group">
-      <label>Bandeau d'en-tête (Photo ou illustration établissement)</label>
-      <input type="file" id="in-banner" accept="image/*" onchange="handleImageUpload(event, 'banner')">
+      <label>
+        <span>Bandeau d'en-tête (Fichier image)</span>
+        <span class="tooltip-container">
+          <span class="tooltip-icon">i</span>
+          <span class="tooltip-box">
+            <strong>Format optimisé pour A4 :</strong><br>
+            • Largeur idéale : ~680 à 700 px<br>
+            • Hauteur conseillée : 140 à 200 px<br>
+            • Ratio panoramique : ~3.5:1 à 4:1<br>
+            Le bandeau s'étale sur toute la largeur utile entre les marges d'impression sécurisées.
+          </span>
+        </span>
+      </label>
+      <input type="file" id="in-banner-file" accept="image/*" onchange="handleImageUpload(event, 'banner')">
     </div>
 
     <div class="form-group">
-      <label>Logo de l'établissement (optionnel)</label>
-      <input type="file" id="in-logo" accept="image/*" onchange="handleImageUpload(event, 'logo')">
+      <label>Logo de l'établissement (Fichier image)</label>
+      <input type="file" id="in-logo-file" accept="image/*" onchange="handleImageUpload(event, 'logo')">
     </div>
 
     <div class="form-group">
       <label>Établissement</label>
-      <input type="text" id="in-school" value="Lycée X" oninput="renderNewsletter()">
+      <input type="text" id="in-school" value="Lycée X" oninput="saveAndRender()">
     </div>
     <div class="form-group">
       <label>Titre Principal de l'édition</label>
-      <input type="text" id="in-title" value="La Lettre des Personnels — Septembre 2026" oninput="renderNewsletter()">
+      <input type="text" id="in-title" value="La Lettre des Personnels — Septembre 2026" oninput="saveAndRender()">
     </div>
 
     <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
 
-    <!-- SECTION EDITO -->
     <div class="form-group">
       <label>Titre de l'éditorial</label>
-      <input type="text" id="in-edito-header" value="Note de la Direction" oninput="renderNewsletter()">
+      <input type="text" id="in-edito-header" value="Note de la Direction" oninput="saveAndRender()">
     </div>
     <div class="form-group">
       <label>Contenu de l'éditorial</label>
-      <textarea id="in-editorial" oninput="renderNewsletter()">Chers collègues, bienvenue à toutes et tous pour cette nouvelle rentrée. Vous trouverez ci-dessous le calendrier des premières instances, les rappels de procédures administratives et les informations logistiques de l'établissement.</textarea>
+      <textarea id="in-editorial" oninput="saveAndRender()">Chers collègues, bienvenue à toutes et tous pour cette nouvelle rentrée. Vous trouverez ci-dessous le calendrier des premières instances, les rappels de procédures administratives et les informations logistiques de l'établissement.</textarea>
     </div>
 
     <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
 
-    <!-- SECTION AGENDA -->
+    <!-- SECTION AGENDA STRUCTURÉ -->
     <div class="form-group">
       <label>Titre de la section Agenda</label>
-      <input type="text" id="in-agenda-header" value="📅 Agenda des Instances & Réunions" oninput="renderNewsletter()">
+      <input type="text" id="in-agenda-header" value="📅 Agenda des Instances, Réunions & Projets" oninput="saveAndRender()">
     </div>
-    <div class="form-group">
-      <label>Événements de l'agenda (1 ligne / événement)</label>
-      <textarea id="in-agenda" oninput="renderNewsletter()">10 Sept. (17h00) : Conseil d'Administration d'installation
-17 Sept. (16h00) : Commission Hygiène et Sécurité (CHS)
-24 Sept. : Date limite de saisie des fiches de vœux d'emploi du temps</textarea>
-    </div>
+    <h3>Événements de l'agenda <button class="btn-add" onclick="addAgendaEvent()">+ Ajouter un événement</button></h3>
+    <div id="agenda-container"></div>
 
     <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
 
-    <!-- SECTION CONSIGNES -->
+    <!-- SECTION STAGES & PFMP -->
+    <div class="form-group">
+      <label>Titre de la section Stages & PFMP</label>
+      <input type="text" id="in-stage-header" value="🎓 Périodes de Formation en Milieu Professionnel & Stages" oninput="saveAndRender()">
+    </div>
+    <h3>Périodes de stage <button class="btn-add" onclick="addStageBlock()">+ Ajouter un stage</button></h3>
+    <div id="stage-container"></div>
+
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+    <!-- NOUVELLE SECTION VOYAGES & MOBILITÉS / ACCUEIL D'ÉLÈVES -->
+    <div class="form-group">
+      <label>Titre de la section Voyages & Accueil d'élèves</label>
+      <input type="text" id="in-travel-header" value="🌍 Voyages scolaires & Accueil d'élèves extérieurs" oninput="saveAndRender()">
+    </div>
+    <h3>Voyages & Accueil d'élèves <button class="btn-add" onclick="addTravelBlock()">+ Ajouter une mobilité</button></h3>
+    <div id="travel-container"></div>
+
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+    <!-- SECTION ORGANISATION -->
     <div class="form-group">
       <label>Titre de la section Organisation</label>
-      <input type="text" id="in-actu-header" value="Consignes & Organisation" oninput="renderNewsletter()">
+      <input type="text" id="in-actu-header" value="📌 Consignes & Organisation" oninput="saveAndRender()">
     </div>
     <h3>Éléments de consignes <button class="btn-add" onclick="addActuBlock()">+ Ajouter</button></h3>
     <div id="actu-container"></div>
@@ -160,7 +329,7 @@
     <!-- SECTION RH -->
     <div class="form-group">
       <label>Titre de la section RH</label>
-      <input type="text" id="in-rh-header" value="Notes RH & Services Généraux" oninput="renderNewsletter()">
+      <input type="text" id="in-rh-header" value="👥 Notes RH & Services Généraux" oninput="saveAndRender()">
     </div>
     <h3>Notes RH / Informations <button class="btn-add" onclick="addRhBlock()">+ Ajouter</button></h3>
     <div id="rh-container"></div>
@@ -169,54 +338,394 @@
 
     <div class="form-group">
       <label>Texte du bouton d'accès rapide</label>
-      <input type="text" id="in-btn-label" value="Accéder au Réseau Interne / ENT" oninput="renderNewsletter()">
+      <input type="text" id="in-btn-label" value="Accéder au Réseau Interne / ENT" oninput="saveAndRender()">
     </div>
     <div class="form-group">
       <label>Lien URL d'accès rapide</label>
-      <input type="text" id="in-link" value="https://ent.fr/espace-personnels" oninput="renderNewsletter()">
+      <input type="text" id="in-link" value="https://ent.fr/espace-personnels" oninput="saveAndRender()">
     </div>
 
+    <!-- SYNTHÈSE DES PIÈCES JOINTES -->
+    <div class="attachments-summary-box">
+      <h4>
+        <span>📎 Synthèse des pièces jointes à joindre au mail</span>
+        <button onclick="copyAttachmentsList()" style="background:#2563eb; color:#fff; border:none; padding:2px 6px; border-radius:3px; font-size:0.7rem; cursor:pointer;">📋 Copier la liste</button>
+      </h4>
+      <div id="attachments-summary-content"></div>
+    </div>
+
+    <!-- BOUTON D'EXPORT PDF HAUTE DÉFINITION -->
     <div class="actions">
-      <button class="btn btn-copy" onclick="copyHTML()">📋 Copier HTML</button>
-      <button class="btn btn-pdf" onclick="exportPDF_HD()">⚡ Export PDF</button>
-      <button class="btn btn-print" onclick="printNative()">🖨️ Imprimer (beta)</button>
+      <button class="btn-pdf-unique" onclick="exportPDF()">📥 Exporter la lettre en PDF HD (&lt; 5 Mo)</button>
     </div>
   </div>
 
   <!-- APERÇU -->
   <div class="preview-container">
-    <div class="preview-title">Aperçu du rendu final</div>
+    <div class="preview-title">Aperçu du rendu final (Format Page A4)</div>
     <div class="preview-scroll-wrapper">
       <div id="email-preview"></div>
     </div>
   </div>
 
   <script>
+    const STORAGE_KEY = 'epistola_draft_data_v1';
+    const documentWidth = 680; 
+
     let bannerData = '';
     let logoData = '';
 
+    let agendaEvents = [
+      { date: "2026-09-10", startTime: "17:00", endTime: "19:00", text: "Conseil d'Administration d'installation (salle polyvalente)", isPedago: false },
+      { date: "2026-09-15", startTime: "09:00", endTime: "12:00", text: "Sortie pédagogique Musée d'Art Moderne — Classe de 2nde 3", isPedago: true },
+      { date: "2026-09-17", startTime: "14:00", endTime: "15:30", text: "Réunion des professeurs principaux de 2nde", isPedago: false },
+      { date: "2026-09-17", startTime: "16:00", endTime: "",      text: "Commission Hygiène et Sécurité (CHS)", isPedago: false },
+      { date: "2026-09-24", startTime: "13:30", endTime: "17:00", text: "Intervention Sécurité Routière & Ateliers pour les élèves de 1ère", isPedago: true }
+    ];
+
+    let stageBlocks = [
+      { nature: "PFMP", period: "Du 21 septembre au 16 octobre 2026", classes: "Terminale Bac Pro MELEC & AGOrA", details: "Suivi des visites en entreprise à planifier via Pronote." }
+    ];
+
+    // Données par défaut pour les voyages et mobilités
+    let travelBlocks = [
+      {
+        nature: "Voyage scolaire",
+        period: "Du 12 au 17 octobre 2026",
+        destination: "Barcelone (Espagne)",
+        classes: "1ère Euro Espagnol (34 élèves)",
+        referents: "Mme Garcia (Espagnol)",
+        participants: "M. Martin (Histoire-Géo), M. Dupont (EPS)",
+        details: "Hébergement en familles d'accueil. Départ en car le lundi à 06h00."
+      }
+    ];
+
     let actuBlocks = [
-      { badge: "Important", title: "Procédure d'Organisation des Sorties", body: "Les dossiers doivent être déposés au secrétariat de direction au plus tard le 15 octobre via le formulaire RH." }
+      { badge: "Important", title: "Procédure d'Organisation des Sorties", body: "Les dossiers doivent être déposés au secrétariat de direction au plus tard le 15 octobre via le formulaire RH.", attachment: "formulaire_demande_sortie_2026.pdf" }
     ];
 
     let rhBlocks = [
-      { badge: "Formation", title: "Plan Académique de Formation (PAF)", body: "La campagne d'inscription est ouverte. Pensez à faire valider vos demandes avant la clôture du serveur." }
+      { badge: "Formation", title: "Plan Académique de Formation (PAF)", body: "La campagne d'inscription est ouverte. Pensez à faire valider vos demandes avant la clôture du serveur.", attachment: "catalogue_formations_paf.pdf" }
     ];
 
-    // Conversion d'une image locale en Base64
+    function saveDraftToStorage() {
+      const data = {
+        primaryColor: document.getElementById('in-color-primary').value,
+        accentColor: document.getElementById('in-color-accent').value,
+        pedagoColor: document.getElementById('in-color-pedago').value,
+        school: document.getElementById('in-school').value,
+        title: document.getElementById('in-title').value,
+        editoHeader: document.getElementById('in-edito-header').value,
+        editorial: document.getElementById('in-editorial').value,
+        agendaHeader: document.getElementById('in-agenda-header').value,
+        stageHeader: document.getElementById('in-stage-header').value,
+        travelHeader: document.getElementById('in-travel-header').value,
+        actuHeader: document.getElementById('in-actu-header').value,
+        rhHeader: document.getElementById('in-rh-header').value,
+        btnLabel: document.getElementById('in-btn-label').value,
+        link: document.getElementById('in-link').value,
+        bannerData,
+        logoData,
+        agendaEvents,
+        stageBlocks,
+        travelBlocks,
+        actuBlocks,
+        rhBlocks
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        const status = document.getElementById('save-status');
+        if (status) {
+          status.style.opacity = '1';
+          status.textContent = '● Brouillon synchronisé';
+        }
+      } catch (e) {
+        console.warn('Quota de stockage local dépassé.');
+      }
+    }
+
+    function loadDraftFromStorage() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return false;
+      try {
+        const data = JSON.parse(saved);
+        applyDataToApp(data);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function applyDataToApp(data) {
+      if (data.primaryColor) document.getElementById('in-color-primary').value = data.primaryColor;
+      if (data.accentColor) document.getElementById('in-color-accent').value = data.accentColor;
+      if (data.pedagoColor) document.getElementById('in-color-pedago').value = data.pedagoColor;
+      if (data.school !== undefined) document.getElementById('in-school').value = data.school;
+      if (data.title !== undefined) document.getElementById('in-title').value = data.title;
+      if (data.editoHeader !== undefined) document.getElementById('in-edito-header').value = data.editoHeader;
+      if (data.editorial !== undefined) document.getElementById('in-editorial').value = data.editorial;
+      if (data.agendaHeader !== undefined) document.getElementById('in-agenda-header').value = data.agendaHeader;
+      if (data.stageHeader !== undefined) document.getElementById('in-stage-header').value = data.stageHeader;
+      if (data.travelHeader !== undefined) document.getElementById('in-travel-header').value = data.travelHeader;
+      if (data.actuHeader !== undefined) document.getElementById('in-actu-header').value = data.actuHeader;
+      if (data.rhHeader !== undefined) document.getElementById('in-rh-header').value = data.rhHeader;
+      if (data.btnLabel !== undefined) document.getElementById('in-btn-label').value = data.btnLabel;
+      if (data.link !== undefined) document.getElementById('in-link').value = data.link;
+
+      bannerData = data.bannerData || '';
+      logoData = data.logoData || '';
+      if (Array.isArray(data.agendaEvents)) agendaEvents = data.agendaEvents;
+      if (Array.isArray(data.stageBlocks)) stageBlocks = data.stageBlocks;
+      if (Array.isArray(data.travelBlocks)) travelBlocks = data.travelBlocks;
+      if (Array.isArray(data.actuBlocks)) actuBlocks = data.actuBlocks;
+      if (Array.isArray(data.rhBlocks)) rhBlocks = data.rhBlocks;
+
+      renderEditorBlocks();
+      renderNewsletter();
+    }
+
+    function exportDataToFile() {
+      const data = {
+        version: "epistola-1.0",
+        savedAt: new Date().toISOString(),
+        primaryColor: document.getElementById('in-color-primary').value,
+        accentColor: document.getElementById('in-color-accent').value,
+        pedagoColor: document.getElementById('in-color-pedago').value,
+        school: document.getElementById('in-school').value,
+        title: document.getElementById('in-title').value,
+        editoHeader: document.getElementById('in-edito-header').value,
+        editorial: document.getElementById('in-editorial').value,
+        agendaHeader: document.getElementById('in-agenda-header').value,
+        stageHeader: document.getElementById('in-stage-header').value,
+        travelHeader: document.getElementById('in-travel-header').value,
+        actuHeader: document.getElementById('in-actu-header').value,
+        rhHeader: document.getElementById('in-rh-header').value,
+        btnLabel: document.getElementById('in-btn-label').value,
+        link: document.getElementById('in-link').value,
+        bannerData,
+        logoData,
+        agendaEvents,
+        stageBlocks,
+        travelBlocks,
+        actuBlocks,
+        rhBlocks
+      };
+
+      const titleSlug = (data.title || 'sauvegarde_epistola').toLowerCase().replace(/[^a-z0-9]/gi, '_');
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${titleSlug}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function importDataFromFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          applyDataToApp(data);
+          saveDraftToStorage();
+          alert("Document chargé avec succès !");
+        } catch (err) {
+          alert("Erreur lors de la lecture du fichier de sauvegarde.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function resetToDefault() {
+      if (!confirm("Voulez-vous réinitialiser le document ? Toutes les modifications non exportées seront perdues.")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+
+    function saveAndRender() {
+      saveDraftToStorage();
+      renderNewsletter();
+    }
+
+    function compressImage(file, maxWidth, quality, callback) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+          callback(compressedDataUrl, width);
+        };
+      };
+    }
+
     function handleImageUpload(e, type) {
       const file = e.target.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        if (type === 'banner') bannerData = event.target.result;
-        if (type === 'logo') logoData = event.target.result;
-        renderNewsletter();
-      };
-      reader.readAsDataURL(file);
+
+      if (type === 'banner') {
+        compressImage(file, 1400, 0.92, function(base64) {
+          bannerData = base64;
+          saveAndRender();
+        });
+      } else if (type === 'logo') {
+        compressImage(file, 400, 0.92, function(base64) {
+          logoData = base64;
+          saveAndRender();
+        });
+      }
+    }
+
+    function renderAgendaEditor() {
+      const container = document.getElementById('agenda-container');
+      container.innerHTML = agendaEvents.map((ev, i) => `
+        <div class="agenda-card" style="${ev.isPedago ? 'border-left: 3px solid #7c3aed; background: #faf5ff;' : ''}">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <strong style="font-size:0.75rem; color:#64748b;">Événement #${i+1}</strong>
+              <label style="display:inline-flex; align-items:center; gap:4px; font-size:0.72rem; color:${ev.isPedago ? '#6b21a8' : '#64748b'}; cursor:pointer; font-weight:600; margin:0;">
+                <input type="checkbox" ${ev.isPedago ? 'checked' : ''} onchange="agendaEvents[${i}].isPedago=this.checked; renderAgendaEditor(); saveAndRender();" style="width:auto; margin:0;">
+                🎓 Action pédagogique
+              </label>
+            </div>
+            <button class="btn-remove" onclick="removeAgendaEvent(${i})">Supprimer</button>
+          </div>
+          <div class="agenda-inputs-row">
+            <input type="date" value="${ev.date}" onchange="agendaEvents[${i}].date=this.value; saveAndRender();" style="flex:2; padding:5px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+            <input type="time" title="Heure de début" value="${ev.startTime || ''}" onchange="agendaEvents[${i}].startTime=this.value; saveAndRender();" style="flex:1; padding:5px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+            <span style="font-size:0.75rem; color:#64748b;">à</span>
+            <input type="time" title="Heure de fin (optionnel)" value="${ev.endTime || ''}" onchange="agendaEvents[${i}].endTime=this.value; saveAndRender();" style="flex:1; padding:5px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+          </div>
+          <input type="text" value="${ev.text}" placeholder="Intitulé de l'événement..." oninput="agendaEvents[${i}].text=this.value; saveAndRender();" style="width:100%; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+        </div>
+      `).join('');
+    }
+
+    function addAgendaEvent() {
+      agendaEvents.push({ date: "", startTime: "", endTime: "", text: "", isPedago: false });
+      renderAgendaEditor();
+      saveAndRender();
+    }
+
+    function removeAgendaEvent(index) {
+      agendaEvents.splice(index, 1);
+      renderAgendaEditor();
+      saveAndRender();
+    }
+
+    function renderStageEditor() {
+      const container = document.getElementById('stage-container');
+      container.innerHTML = stageBlocks.map((st, i) => `
+        <div class="dynamic-card">
+          <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+            <strong style="font-size:0.75rem; color:#64748b;">Stage / PFMP #${i+1}</strong>
+            <button class="btn-remove" onclick="removeStageBlock(${i})">Supprimer</button>
+          </div>
+          <div style="display:flex; gap:6px; margin-bottom:5px;">
+            <input type="text" list="stage-natures" value="${st.nature || ''}" placeholder="Nature (PFMP, Stage...)" oninput="stageBlocks[${i}].nature=this.value; saveAndRender();" style="flex:1; padding:5px; font-size:0.78rem; border:1px solid #cbd5e1; border-radius:4px;">
+            <datalist id="stage-natures">
+              <option value="PFMP">
+              <option value="Stage">
+              <option value="Stage d'observation">
+              <option value="Stage passerelle">
+            </datalist>
+            <input type="text" value="${st.period || ''}" placeholder="Période (ex: Du 12 au 30 oct.)" oninput="stageBlocks[${i}].period=this.value; saveAndRender();" style="flex:2; padding:5px; font-size:0.78rem; border:1px solid #cbd5e1; border-radius:4px;">
+          </div>
+          <input type="text" value="${st.classes || ''}" placeholder="Classes concernées (ex: 1ère Pro, 3e...)" oninput="stageBlocks[${i}].classes=this.value; saveAndRender();" style="width:100%; margin-bottom:5px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <input type="text" value="${st.details || ''}" placeholder="Détails / Consignes (optionnel)..." oninput="stageBlocks[${i}].details=this.value; saveAndRender();" style="width:100%; padding:5px; font-size:0.78rem; border:1px solid #cbd5e1; border-radius:4px;">
+        </div>
+      `).join('');
+    }
+
+    function addStageBlock() {
+      stageBlocks.push({ nature: "PFMP", period: "", classes: "", details: "" });
+      renderStageEditor();
+      saveAndRender();
+    }
+
+    function removeStageBlock(index) {
+      stageBlocks.splice(index, 1);
+      renderStageEditor();
+      saveAndRender();
+    }
+
+    // Gestion des Voyages et Mobilités
+    function renderTravelEditor() {
+      const container = document.getElementById('travel-container');
+      container.innerHTML = travelBlocks.map((tr, i) => `
+        <div class="dynamic-card" style="border-left: 3px solid #0284c7;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+            <strong style="font-size:0.75rem; color:#0369a1;">Voyage / Accueil #${i+1}</strong>
+            <button class="btn-remove" onclick="removeTravelBlock(${i})">Supprimer</button>
+          </div>
+          <div style="display:flex; gap:6px; margin-bottom:5px;">
+            <input type="text" list="travel-natures" value="${tr.nature || ''}" placeholder="Nature (Voyage, Accueil...)" oninput="travelBlocks[${i}].nature=this.value; saveAndRender();" style="flex:1; padding:5px; font-size:0.78rem; border:1px solid #cbd5e1; border-radius:4px;">
+            <datalist id="travel-natures">
+              <option value="Voyage scolaire">
+              <option value="Échange linguistique">
+              <option value="Accueil d'élèves">
+              <option value="Mobilité Erasmus+">
+            </datalist>
+            <input type="text" value="${tr.period || ''}" placeholder="Dates / Période (ex: Du 12 au 17 oct.)" oninput="travelBlocks[${i}].period=this.value; saveAndRender();" style="flex:1.5; padding:5px; font-size:0.78rem; border:1px solid #cbd5e1; border-radius:4px;">
+          </div>
+          <div style="display:flex; gap:6px; margin-bottom:5px;">
+            <input type="text" value="${tr.destination || ''}" placeholder="Destination / Provenance (ex: Barcelone)" oninput="travelBlocks[${i}].destination=this.value; saveAndRender();" style="flex:1; padding:5px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+            <input type="text" value="${tr.classes || ''}" placeholder="Classes / Élèves (ex: 1ère Euro)" oninput="travelBlocks[${i}].classes=this.value; saveAndRender();" style="flex:1; padding:5px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+          </div>
+          <div style="display:flex; gap:6px; margin-bottom:5px;">
+            <input type="text" value="${tr.referents || ''}" placeholder="Personnels référents (ex: Mme Garcia)" oninput="travelBlocks[${i}].referents=this.value; saveAndRender();" style="flex:1; padding:5px; font-size:0.78rem; border:1px solid #cbd5e1; border-radius:4px;">
+            <input type="text" value="${tr.participants || ''}" placeholder="Personnels accompagnateurs (ex: M. Martin)" oninput="travelBlocks[${i}].participants=this.value; saveAndRender();" style="flex:1; padding:5px; font-size:0.78rem; border:1px solid #cbd5e1; border-radius:4px;">
+          </div>
+          <input type="text" value="${tr.details || ''}" placeholder="Précisions / Logistique (optionnel)..." oninput="travelBlocks[${i}].details=this.value; saveAndRender();" style="width:100%; padding:5px; font-size:0.78rem; border:1px solid #cbd5e1; border-radius:4px;">
+        </div>
+      `).join('');
+    }
+
+    function addTravelBlock() {
+      travelBlocks.push({
+        nature: "Voyage scolaire",
+        period: "",
+        destination: "",
+        classes: "",
+        referents: "",
+        participants: "",
+        details: ""
+      });
+      renderTravelEditor();
+      saveAndRender();
+    }
+
+    function removeTravelBlock(index) {
+      travelBlocks.splice(index, 1);
+      renderTravelEditor();
+      saveAndRender();
     }
 
     function renderEditorBlocks() {
+      renderAgendaEditor();
+      renderStageEditor();
+      renderTravelEditor();
+
       const actuContainer = document.getElementById('actu-container');
       actuContainer.innerHTML = actuBlocks.map((b, i) => `
         <div class="dynamic-card">
@@ -224,9 +733,10 @@
             <strong style="font-size:0.75rem; color:#64748b;">Élément #${i+1}</strong>
             <button class="btn-remove" onclick="removeActuBlock(${i})">Supprimer</button>
           </div>
-          <input type="text" value="${b.badge || ''}" placeholder="Badge (ex: Important, Rappel, Stage)" oninput="actuBlocks[${i}].badge=this.value; renderNewsletter();" style="width:100%; margin-bottom:5px; padding:5px; font-size:0.75rem; border:1px solid #cbd5e1; border-radius:4px;">
-          <input type="text" value="${b.title}" placeholder="Titre..." oninput="actuBlocks[${i}].title=this.value; renderNewsletter();" style="width:100%; margin-bottom:5px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
-          <textarea placeholder="Contenu..." oninput="actuBlocks[${i}].body=this.value; renderNewsletter();" style="width:100%; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px; min-height:45px;">${b.body}</textarea>
+          <input type="text" value="${b.badge || ''}" placeholder="Badge (ex: Important, Rappel)" oninput="actuBlocks[${i}].badge=this.value; saveAndRender();" style="width:100%; margin-bottom:5px; padding:5px; font-size:0.75rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <input type="text" value="${b.title}" placeholder="Titre..." oninput="actuBlocks[${i}].title=this.value; saveAndRender();" style="width:100%; margin-bottom:5px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <textarea placeholder="Contenu..." oninput="actuBlocks[${i}].body=this.value; saveAndRender();" style="width:100%; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px; min-height:45px; margin-bottom:5px;">${b.body}</textarea>
+          <input type="text" value="${b.attachment || ''}" placeholder="📎 Nom de la pièce jointe (ex: formulaire_sortie.pdf)" oninput="actuBlocks[${i}].attachment=this.value; saveAndRender();" style="width:100%; padding:5px 8px; font-size:0.75rem; border:1px dashed #94a3b8; border-radius:4px; background:#ffffff;">
         </div>
       `).join('');
 
@@ -237,223 +747,443 @@
             <strong style="font-size:0.75rem; color:#64748b;">Note #${i+1}</strong>
             <button class="btn-remove" onclick="removeRhBlock(${i})">Supprimer</button>
           </div>
-          <input type="text" value="${b.badge || ''}" placeholder="Badge (ex: RH, Logistique, Prévention)" oninput="rhBlocks[${i}].badge=this.value; renderNewsletter();" style="width:100%; margin-bottom:5px; padding:5px; font-size:0.75rem; border:1px solid #cbd5e1; border-radius:4px;">
-          <input type="text" value="${b.title}" placeholder="Titre..." oninput="rhBlocks[${i}].title=this.value; renderNewsletter();" style="width:100%; margin-bottom:5px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
-          <textarea placeholder="Contenu..." oninput="rhBlocks[${i}].body=this.value; renderNewsletter();" style="width:100%; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px; min-height:45px;">${b.body}</textarea>
+          <input type="text" value="${b.badge || ''}" placeholder="Badge (ex: RH, Logistique)" oninput="rhBlocks[${i}].badge=this.value; saveAndRender();" style="width:100%; margin-bottom:5px; padding:5px; font-size:0.75rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <input type="text" value="${b.title}" placeholder="Titre..." oninput="rhBlocks[${i}].title=this.value; saveAndRender();" style="width:100%; margin-bottom:5px; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px;">
+          <textarea placeholder="Contenu..." oninput="rhBlocks[${i}].body=this.value; saveAndRender();" style="width:100%; padding:6px; font-size:0.8rem; border:1px solid #cbd5e1; border-radius:4px; min-height:45px; margin-bottom:5px;">${b.body}</textarea>
+          <input type="text" value="${b.attachment || ''}" placeholder="📎 Nom de la pièce jointe (ex: note_service_rh.pdf)" oninput="rhBlocks[${i}].attachment=this.value; saveAndRender();" style="width:100%; padding:5px 8px; font-size:0.75rem; border:1px dashed #94a3b8; border-radius:4px; background:#ffffff;">
         </div>
       `).join('');
     }
 
     function addActuBlock() {
-      actuBlocks.push({ badge: "Info", title: "Nouvelle consigne", body: "Précisez ici les modalités..." });
+      actuBlocks.push({ badge: "Info", title: "Nouvelle consigne", body: "Précisez ici les modalités...", attachment: "" });
       renderEditorBlocks();
-      renderNewsletter();
+      saveAndRender();
     }
 
     function removeActuBlock(index) {
       actuBlocks.splice(index, 1);
       renderEditorBlocks();
-      renderNewsletter();
+      saveAndRender();
     }
 
     function addRhBlock() {
-      rhBlocks.push({ badge: "RH", title: "Nouvelle note", body: "Saisissez votre note de service..." });
+      rhBlocks.push({ badge: "RH", title: "Nouvelle note", body: "Saisissez votre note de service...", attachment: "" });
       renderEditorBlocks();
-      renderNewsletter();
+      saveAndRender();
     }
 
     function removeRhBlock(index) {
       rhBlocks.splice(index, 1);
       renderEditorBlocks();
-      renderNewsletter();
+      saveAndRender();
+    }
+
+    function getAttachmentsList() {
+      const list = [];
+      actuBlocks.forEach(b => { if (b.attachment && b.attachment.trim()) list.push(b.attachment.trim()); });
+      rhBlocks.forEach(b => { if (b.attachment && b.attachment.trim()) list.push(b.attachment.trim()); });
+      return list;
+    }
+
+    function updateAttachmentsSummary() {
+      const summaryBox = document.getElementById('attachments-summary-content');
+      const list = getAttachmentsList();
+
+      if (list.length === 0) {
+        summaryBox.innerHTML = '<p style="color:#64748b; font-size:0.75rem; margin:0; font-style:italic;">Aucune pièce jointe spécifiée dans les éléments.</p>';
+        return;
+      }
+
+      summaryBox.innerHTML = `
+        <ul class="attachments-list">
+          ${list.map(pj => `
+            <li>
+              <input type="checkbox" style="width:auto; margin:0;">
+              <strong>${pj}</strong>
+            </li>
+          `).join('')}
+        </ul>
+      `;
+    }
+
+    function copyAttachmentsList() {
+      const list = getAttachmentsList();
+      if (list.length === 0) {
+        alert("Aucune pièce jointe n'est actuellement renseignée.");
+        return;
+      }
+      const textToCopy = "Pièces jointes à joindre avec la lettre d'information :\n" + list.map(item => `• ${item}`).join('\n');
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        alert("Liste des pièces jointes copiée !");
+      });
+    }
+
+    function formatDateFrench(dateStr) {
+      if (!dateStr) return "Date à préciser";
+      try {
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+          const d = new Date(parts[0], parts[1] - 1, parts[2]);
+          const options = { weekday: 'long', day: 'numeric', month: 'long' };
+          let formatted = d.toLocaleDateString('fr-FR', options);
+          return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+        }
+      } catch (e) {}
+      return dateStr;
+    }
+
+    function buildAgendaRowsHTML(accentColor, pedagoColor, agendaHeader, primaryColor) {
+      const validEvents = agendaEvents.filter(e => e.text && e.text.trim() !== '');
+      if (validEvents.length === 0) return '';
+
+      const sorted = [...validEvents].sort((a, b) => {
+        const dateA = a.date || '9999-99-99';
+        const dateB = b.date || '9999-99-99';
+        if (dateA !== dateB) return dateA.localeCompare(dateB);
+        const timeA = a.startTime || '99:99';
+        const timeB = b.startTime || '99:99';
+        return timeA.localeCompare(timeB);
+      });
+
+      const groups = {};
+      sorted.forEach(ev => {
+        const key = ev.date || 'indefini';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(ev);
+      });
+
+      let rowsHTML = `
+        <tr class="pdf-no-break">
+          <td style="padding: 10px 28px 4px 28px;">
+            <h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${agendaHeader}</h2>
+          </td>
+        </tr>
+      `;
+
+      for (const dateKey in groups) {
+        const dayEvents = groups[dateKey];
+        const dateDisplay = dateKey === 'indefini' ? 'Dates à préciser' : formatDateFrench(dateKey);
+
+        const itemsHTML = dayEvents.map(ev => {
+          const currentColor = ev.isPedago ? pedagoColor : accentColor;
+          let timeBadge = '';
+
+          if (ev.startTime) {
+            let labelTime = ev.startTime.replace(':', 'h');
+            if (ev.endTime) {
+              labelTime += ` - ${ev.endTime.replace(':', 'h')}`;
+            }
+            timeBadge = `<span style="display:inline-block; background-color:${currentColor}; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:4px; margin-right:8px; white-space:nowrap; vertical-align:middle;">${labelTime}</span>`;
+          }
+
+          const pedagoTag = ev.isPedago ? `<span style="display:inline-block; background-color:${pedagoColor}22; color:${pedagoColor}; border:1px solid ${pedagoColor}66; font-size:10px; font-weight:700; padding:1px 6px; border-radius:3px; text-transform:uppercase; margin-right:6px;">ACTION</span>` : '';
+
+          return `
+            <div style="display:flex; align-items:flex-start; margin-bottom:5px;">
+              ${ev.startTime ? `<div style="flex-shrink:0;">${timeBadge}</div>` : ''}
+              <div style="color:#334155; font-size:13px; line-height:1.45; padding-top:1px;">
+                ${pedagoTag}${ev.text}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        rowsHTML += `
+          <tr class="pdf-no-break">
+            <td style="padding: 4px 28px 6px 28px;">
+              <div style="background-color: #f8fafc; border-left: 4px solid ${accentColor}; border: 1px solid #e2e8f0; border-left-width: 4px; border-radius: 4px; padding: 10px 14px;">
+                <div style="font-size:12.5px; font-weight:700; color:#0f172a; text-transform:capitalize; padding-bottom:4px; margin-bottom:6px; border-bottom:1px dashed #cbd5e1;">
+                  🗓️ ${dateDisplay}
+                </div>
+                <div style="padding-left:2px;">
+                  ${itemsHTML}
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+
+      return rowsHTML;
     }
 
     function renderNewsletter() {
       const primaryColor = document.getElementById('in-color-primary').value;
       const accentColor = document.getElementById('in-color-accent').value;
+      const pedagoColor = document.getElementById('in-color-pedago').value;
       const school = document.getElementById('in-school').value;
       const title = document.getElementById('in-title').value;
       const editoHeader = document.getElementById('in-edito-header').value;
       const editorial = document.getElementById('in-editorial').value.replace(/\n/g, '<br>');
       const agendaHeader = document.getElementById('in-agenda-header').value;
-      const agenda = document.getElementById('in-agenda').value.split('\n').filter(line => line.trim() !== '');
+      const stageHeader = document.getElementById('in-stage-header').value;
+      const travelHeader = document.getElementById('in-travel-header').value;
       const actuHeader = document.getElementById('in-actu-header').value;
       const rhHeader = document.getElementById('in-rh-header').value;
       const btnLabel = document.getElementById('in-btn-label').value;
       const link = document.getElementById('in-link').value;
 
-      const agendaHTML = agenda.map(item => `
-        <li style="margin-bottom: 8px; color: #334155; font-size: 13px; line-height: 1.4;">${item}</li>
+      const agendaRowsHTML = buildAgendaRowsHTML(accentColor, pedagoColor, agendaHeader, primaryColor);
+
+      // Section Stages & PFMP
+      const validStages = stageBlocks.filter(st => (st.classes && st.classes.trim()) || (st.period && st.period.trim()));
+      const stageHeaderHTML = (validStages.length > 0 && stageHeader) ? `
+        <tr class="pdf-no-break">
+          <td style="padding: 12px 28px 4px 28px;">
+            <h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${stageHeader}</h2>
+          </td>
+        </tr>
+      ` : '';
+
+      const stageItemsHTML = validStages.map(st => `
+        <tr class="pdf-no-break">
+          <td style="padding: 4px 28px 8px 28px;">
+            <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; border-radius: 6px; padding: 12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; flex-wrap:wrap; gap:6px;">
+                <div>
+                  <span style="background-color: #16a34a; color: #ffffff; font-size: 10.5px; font-weight: bold; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; margin-right: 6px;">${st.nature || 'STAGE'}</span>
+                  <strong style="color: #14532d; font-size: 13.5px;">${st.classes}</strong>
+                </div>
+                ${st.period ? `<div style="font-size: 12px; font-weight: 600; color: #166534; background: #dcfce7; padding: 2px 8px; border-radius: 4px;">📅 ${st.period}</div>` : ''}
+              </div>
+              ${st.details ? `<p style="color: #166534; font-size: 12.5px; line-height: 1.45; margin: 4px 0 0 0;">${st.details}</p>` : ''}
+            </div>
+          </td>
+        </tr>
       `).join('');
 
-      const actuHTML = actuBlocks.length > 0 ? `
-        <tr>
-          <td style="padding: 0 30px 20px 30px;">
-            ${actuHeader ? `<h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${actuHeader}</h2>` : ''}
-            ${actuBlocks.map(b => `
-              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 10px;">
-                <div style="margin-bottom: 4px;">
-                  ${b.badge ? `<span style="background-color: ${accentColor}; color: #ffffff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; margin-right: 6px;">${b.badge}</span>` : ''}
-                  <strong style="color: #0f172a; font-size: 13.5px;">${b.title}</strong>
-                </div>
-                <p style="color: #475569; font-size: 13px; line-height: 1.5; margin: 0;">${b.body.replace(/\n/g, '<br>')}</p>
-              </div>
-            `).join('')}
+      // Section Voyages & Accueil d'élèves
+      const validTravels = travelBlocks.filter(tr => (tr.destination && tr.destination.trim()) || (tr.period && tr.period.trim()) || (tr.classes && tr.classes.trim()));
+      const travelHeaderHTML = (validTravels.length > 0 && travelHeader) ? `
+        <tr class="pdf-no-break">
+          <td style="padding: 12px 28px 4px 28px;">
+            <h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${travelHeader}</h2>
           </td>
         </tr>
       ` : '';
 
-      const rhHTML = rhBlocks.length > 0 ? `
-        <tr>
-          <td style="padding: 0 30px 24px 30px;">
-            ${rhHeader ? `<h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${rhHeader}</h2>` : ''}
-            ${rhBlocks.map(b => `
-              <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 4px; padding: 12px; margin-bottom: 10px;">
-                <div style="margin-bottom: 4px;">
-                  ${b.badge ? `<span style="background-color: #f59e0b; color: #ffffff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; margin-right: 6px;">${b.badge}</span>` : ''}
-                  <strong style="color: #92400e; font-size: 13.5px;">${b.title}</strong>
+      const travelItemsHTML = validTravels.map(tr => `
+        <tr class="pdf-no-break">
+          <td style="padding: 4px 28px 8px 28px;">
+            <div style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-left: 4px solid #0284c7; border-radius: 6px; padding: 12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+                <div>
+                  <span style="background-color: #0284c7; color: #ffffff; font-size: 10.5px; font-weight: bold; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; margin-right: 6px;">${tr.nature || 'VOYAGE'}</span>
+                  <strong style="color: #0c4a6e; font-size: 14px;">${tr.destination ? tr.destination : 'Mobilité'}</strong>
+                  ${tr.classes ? `<span style="color: #0369a1; font-size: 13px; font-weight: 600; margin-left: 6px;">(${tr.classes})</span>` : ''}
                 </div>
-                <p style="color: #78350f; font-size: 13px; line-height: 1.5; margin: 0;">${b.body.replace(/\n/g, '<br>')}</p>
+                ${tr.period ? `<div style="font-size: 12px; font-weight: 600; color: #0369a1; background: #e0f2fe; padding: 2px 8px; border-radius: 4px;">📅 ${tr.period}</div>` : ''}
               </div>
-            `).join('')}
+
+              ${(tr.referents || tr.participants) ? `
+                <div style="background: #ffffff; border: 1px solid #e0f2fe; border-radius: 4px; padding: 6px 10px; margin-top: 6px; font-size: 12px; line-height: 1.5; color: #334155;">
+                  ${tr.referents ? `<div>👤 <strong>Référent(s) :</strong> ${tr.referents}</div>` : ''}
+                  ${tr.participants ? `<div>👥 <strong>Accompagnateur(s) :</strong> ${tr.participants}</div>` : ''}
+                </div>
+              ` : ''}
+
+              ${tr.details ? `<p style="color: #0369a1; font-size: 12px; line-height: 1.45; margin: 6px 0 0 0;">ℹ️ ${tr.details}</p>` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      const actuHeaderHTML = (actuBlocks.length > 0 && actuHeader) ? `
+        <tr class="pdf-no-break">
+          <td style="padding: 12px 28px 4px 28px;">
+            <h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${actuHeader}</h2>
           </td>
         </tr>
       ` : '';
+
+      const actuItemsHTML = actuBlocks.map(b => `
+        <tr class="pdf-no-break">
+          <td style="padding: 4px 28px 8px 28px;">
+            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
+              <div style="margin-bottom: 4px;">
+                ${b.badge ? `<span style="background-color: ${accentColor}; color: #ffffff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; margin-right: 6px;">${b.badge}</span>` : ''}
+                <strong style="color: #0f172a; font-size: 13.5px;">${b.title}</strong>
+              </div>
+              <p style="color: #475569; font-size: 13px; line-height: 1.5; margin: 0;">${b.body.replace(/\n/g, '<br>')}</p>
+              ${b.attachment && b.attachment.trim() ? `
+                <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1; font-size: 11.5px; color: #2563eb; font-weight: 500;">
+                  📎 Pièce jointe : <span style="text-decoration: underline;">${b.attachment.trim()}</span>
+                </div>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      const rhHeaderHTML = (rhBlocks.length > 0 && rhHeader) ? `
+        <tr class="pdf-no-break">
+          <td style="padding: 12px 28px 4px 28px;">
+            <h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${rhHeader}</h2>
+          </td>
+        </tr>
+      ` : '';
+
+      const rhItemsHTML = rhBlocks.map(b => `
+        <tr class="pdf-no-break">
+          <td style="padding: 4px 28px 8px 28px;">
+            <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 4px; padding: 12px;">
+              <div style="margin-bottom: 4px;">
+                ${b.badge ? `<span style="background-color: #f59e0b; color: #ffffff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; margin-right: 6px;">${b.badge}</span>` : ''}
+                <strong style="color: #92400e; font-size: 13.5px;">${b.title}</strong>
+              </div>
+              <p style="color: #78350f; font-size: 13px; line-height: 1.5; margin: 0;">${b.body.replace(/\n/g, '<br>')}</p>
+              ${b.attachment && b.attachment.trim() ? `
+                <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #fcd34d; font-size: 11.5px; color: #b45309; font-weight: 500;">
+                  📎 Pièce jointe : <span style="text-decoration: underline;">${b.attachment.trim()}</span>
+                </div>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
 
       const htmlTemplate = `
-        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-          <tr>
-            <td align="center" valign="middle" style="padding: 10px 0;">
-              <table width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1; text-align: left;">
-                
-                <!-- Bandeau Image (si présent) -->
-                ${bannerData ? `
+        <table width="${documentWidth}" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1; text-align: left; margin: 0 auto;">
+          
+          <!-- BANDEAU -->
+          ${bannerData ? `
+          <tr class="pdf-no-break">
+            <td style="line-height: 0; padding: 0; margin: 0; width: 100%;">
+              <img src="${bannerData}" alt="Bandeau" style="width: 100%; height: auto; display: block; border: 0;">
+            </td>
+          </tr>
+          ` : ''}
+
+          <!-- EN-TÊTE -->
+          <tr class="pdf-no-break">
+            <td style="background-color: ${primaryColor}; padding: 22px 28px;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td style="line-height: 0; padding: 0;">
-                    <img src="${bannerData}" alt="Bandeau" style="width: 100%; max-height: 160px; object-fit: cover; display: block;">
+                  <td valign="middle">
+                    <p style="color: #94a3b8; font-size: 11px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 4px 0;">Communication Interne — ${school}</p>
+                    <h1 style="color: #ffffff; font-size: 18.5px; font-weight: 700; margin: 0;">${title}</h1>
                   </td>
-                </tr>
-                ` : ''}
-
-                <!-- En-tête -->
-                <tr>
-                  <td style="background-color: ${primaryColor}; padding: 22px 30px;">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                      <tr>
-                        <td valign="middle">
-                          <p style="color: #94a3b8; font-size: 11px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 4px 0;">Communication Interne — ${school}</p>
-                          <h1 style="color: #ffffff; font-size: 18px; font-weight: 700; margin: 0;">${title}</h1>
-                        </td>
-                        ${logoData ? `
-                        <td align="right" valign="middle" style="width: 70px;">
-                          <img src="${logoData}" alt="Logo" style="max-height: 55px; max-width: 65px; border-radius: 4px; background: #ffffff; padding: 2px;">
-                        </td>
-                        ` : ''}
-                      </tr>
-                    </table>
+                  ${logoData ? `
+                  <td align="right" valign="middle" style="width: 75px; padding-left: 15px;">
+                    <img src="${logoData}" alt="Logo" style="max-height: 55px; max-width: 65px; border-radius: 4px; background: #ffffff; padding: 2px; display: block;">
                   </td>
+                  ` : ''}
                 </tr>
-
-                <!-- Note de la Direction -->
-                <tr>
-                  <td style="padding: 24px 30px; background-color: #ffffff;">
-                    ${editoHeader ? `<h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${editoHeader}</h2>` : ''}
-                    <p style="color: #334155; font-size: 13.5px; line-height: 1.6; margin: 0;">${editorial}</p>
-                  </td>
-                </tr>
-
-                <!-- Agenda -->
-                ${agenda.length > 0 ? `
-                <tr>
-                  <td style="padding: 0 30px 20px 30px;">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; border-radius: 6px; padding: 18px; border-left: 4px solid ${accentColor};">
-                      <tr>
-                        <td>
-                          ${agendaHeader ? `<h2 style="color: #0f172a; font-size: 14px; margin: 0 0 10px 0;">${agendaHeader}</h2>` : ''}
-                          <ul style="margin: 0; padding-left: 18px;">${agendaHTML}</ul>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                ` : ''}
-
-                <!-- Consignes & Organisation -->
-                ${actuHTML}
-
-                <!-- Notes RH / Logistique -->
-                ${rhHTML}
-
-                <!-- Bouton d'accès rapide -->
-                ${btnLabel ? `
-                <tr>
-                  <td align="center" style="padding: 0 30px 25px 30px;">
-                    <a href="${link}" target="_blank" style="background-color: ${accentColor}; color: #ffffff; padding: 11px 22px; border-radius: 5px; font-weight: 600; font-size: 13px; text-decoration: none; display: inline-block;">${btnLabel}</a>
-                  </td>
-                </tr>
-                ` : ''}
-
-                <!-- Pied de page -->
-                <tr>
-                  <td style="background-color: #f8fafc; padding: 12px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
-                    <p style="color: #94a3b8; font-size: 11px; margin: 0;">Diffusion interne — ${school} — Réservé aux personnels de l'établissement.</p>
-                  </td>
-                </tr>
-
               </table>
             </td>
           </tr>
+
+          <!-- MOT DE LA DIRECTION -->
+          <tr class="pdf-no-break">
+            <td style="padding: 24px 28px; background-color: #ffffff;">
+              ${editoHeader ? `<h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${editoHeader}</h2>` : ''}
+              <p style="color: #334155; font-size: 13.5px; line-height: 1.6; margin: 0;">${editorial}</p>
+            </td>
+          </tr>
+
+          <!-- AGENDA AVEC ACTIONS PÉDAGOGIQUES COLORÉES -->
+          ${agendaRowsHTML}
+
+          <!-- SECTION STAGES & PFMP -->
+          ${stageHeaderHTML}
+          ${stageItemsHTML}
+
+          <!-- SECTION VOYAGES & MOBILITÉS / ACCUEIL D'ÉLÈVES -->
+          ${travelHeaderHTML}
+          ${travelItemsHTML}
+
+          <!-- SOUS-BLOCS ORGANISATION -->
+          ${actuHeaderHTML}
+          ${actuItemsHTML}
+
+          <!-- SOUS-BLOCS RH -->
+          ${rhHeaderHTML}
+          ${rhItemsHTML}
+
+          <!-- BOUTON D'ACCÈS RAPIDE -->
+          ${btnLabel ? `
+          <tr class="pdf-no-break">
+            <td align="center" style="padding: 16px 28px 25px 28px;">
+              <a href="${link}" target="_blank" style="background-color: ${accentColor}; color: #ffffff; padding: 11px 24px; border-radius: 5px; font-weight: 600; font-size: 13px; text-decoration: none; display: inline-block;">${btnLabel}</a>
+            </td>
+          </tr>
+          ` : ''}
+
+          <!-- PIED DE PAGE -->
+          <tr class="pdf-no-break">
+            <td style="background-color: #f8fafc; padding: 12px 28px; text-align: center; border-top: 1px solid #e2e8f0;">
+              <p style="color: #94a3b8; font-size: 11px; margin: 0;">Diffusion interne — ${school} — Réservé aux personnels de l'établissement.</p>
+            </td>
+          </tr>
+
         </table>
       `;
 
       document.getElementById('email-preview').innerHTML = htmlTemplate;
+      updateAttachmentsSummary();
     }
 
-    function copyHTML() {
-      const htmlContent = document.getElementById('email-preview').innerHTML;
-      navigator.clipboard.writeText(htmlContent).then(() => {
-        alert('Code HTML copié !');
-      });
-    }
-
-    function printNative() {
-      window.print();
-    }
-
-    function exportPDF_HD() {
+    function exportPDF() {
       const preview = document.getElementById('email-preview');
-      const title = document.getElementById('in-title').value || 'newsletter_personnels';
+      const baseTitle = document.getElementById('in-title').value || 'lettre_personnels';
+      const cleanTitle = baseTitle.toLowerCase().replace(/[^a-z0-9]/gi, '_');
+
+      const contentHeight = preview.offsetHeight;
+      const isSinglePage = contentHeight <= 980;
 
       const wrapper = document.createElement('div');
-      wrapper.style.display = 'flex';
-      wrapper.style.justifyContent = 'center';
-      wrapper.style.alignItems = 'center';
-      wrapper.style.minHeight = '275mm';
       wrapper.style.width = '100%';
       wrapper.style.backgroundColor = '#ffffff';
 
+      if (isSinglePage) {
+        wrapper.style.display = 'flex';
+        wrapper.style.justifyContent = 'center';
+        wrapper.style.alignItems = 'center';
+        wrapper.style.minHeight = '267mm';
+      } else {
+        wrapper.style.display = 'block';
+        wrapper.style.padding = '0';
+      }
+
       const clone = preview.cloneNode(true);
       clone.style.boxShadow = 'none';
-      clone.style.margin = 'auto';
+      clone.style.margin = '0 auto';
       wrapper.appendChild(clone);
       
       document.body.appendChild(wrapper);
 
       const opt = {
-        margin:       [10, 10, 10, 10],
-        filename:     `${title.toLowerCase().replace(/[^a-z0-9]/gi, '_')}.pdf`,
-        image:        { type: 'png', quality: 1.0 },
-        html2canvas:  { scale: 4, useCORS: true, logging: false, dpi: 300, letterRendering: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin:       [15, 15, 15, 15],
+        filename:     `${cleanTitle}.pdf`,
+        image:        { type: 'jpeg', quality: 0.95 },
+        html2canvas:  { 
+          scale: 3.0,
+          letterRendering: true,
+          useCORS: false
+        },
+        pagebreak:    { mode: ['css', 'legacy'] },
+        jsPDF:        { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait', 
+          compress: true 
+        }
       };
 
       html2pdf().set(opt).from(wrapper).save().then(() => {
         document.body.removeChild(wrapper);
+      }).catch(err => {
+        console.error("Erreur lors de la génération PDF :", err);
+        document.body.removeChild(wrapper);
+        alert("Une erreur est survenue lors de l'exportation du PDF.");
       });
     }
 
-    renderEditorBlocks();
-    renderNewsletter();
+    if (!loadDraftFromStorage()) {
+      renderEditorBlocks();
+      renderNewsletter();
+    }
   </script>
 </body>
 </html>
