@@ -22,6 +22,7 @@
       border: 1px solid #e2e8f0;
       border-radius: 6px;
       flex-wrap: wrap;
+      align-items: center;
     }
     .btn-tool {
       background: #ffffff;
@@ -223,6 +224,7 @@
       <button class="btn-tool" onclick="document.getElementById('import-file-input').click()" title="Reprendre un document précédemment enregistré">📂 Charger document</button>
       <input type="file" id="import-file-input" accept=".json" style="display:none;" onchange="importDataFromFile(event)">
       <button class="btn-tool" onclick="resetToDefault()" style="color:#ef4444;" title="Vider complètement le document">🔄 Nouveau</button>
+      <button class="btn-tool" onclick="loadExampleData()" style="color:#2563eb; font-weight:700;" title="Charger un jeu complet de données exemples">🧪 Exemple / Test</button>
       <div class="status-save" id="save-status">● Brouillon synchronisé</div>
     </div>
 
@@ -266,7 +268,7 @@
 
     <div class="form-group">
       <label>Établissement</label>
-      <input type="text" id="in-school" value="Lycée X" oninput="saveAndRender()">
+      <input type="text" id="in-school" value="Lycée Polyvalent Jean Moulin" oninput="saveAndRender()">
     </div>
     <div class="form-group">
       <label>Titre Principal de l'édition</label>
@@ -281,7 +283,7 @@
     </div>
     <div class="form-group">
       <label>Contenu de l'éditorial</label>
-      <textarea id="in-editorial" oninput="saveAndRender()">Chers collègues, bienvenue à toutes et tous pour cette nouvelle rentrée. Vous trouverez ci-dessous le calendrier des premières instances, les rappels de procédures administratives et les informations logistiques de l'établissement.</textarea>
+      <textarea id="in-editorial" oninput="saveAndRender()">Chers collègues, bienvenue à toutes et tous pour cette nouvelle rentrée scolaire. Vous trouverez ci-dessous le calendrier des premières instances, les consignes administratives ainsi que les informations relatives aux projets pédagogiques et mobilités en cours.</textarea>
     </div>
 
     <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
@@ -338,11 +340,11 @@
 
     <div class="form-group">
       <label>Texte du bouton d'accès rapide</label>
-      <input type="text" id="in-btn-label" value="Accéder au Réseau Interne / ENT" oninput="saveAndRender()">
+      <input type="text" id="in-btn-label" value="Accéder à l'Espace ENT de l'établissement" oninput="saveAndRender()">
     </div>
     <div class="form-group">
       <label>Lien URL d'accès rapide</label>
-      <input type="text" id="in-link" value="https://ent.fr/espace-personnels" oninput="saveAndRender()">
+      <input type="text" id="in-link" value="https://ent.mon-etablissement.fr" oninput="saveAndRender()">
     </div>
 
     <!-- SYNTHÈSE DES PIÈCES JOINTES -->
@@ -375,38 +377,13 @@
     let bannerData = '';
     let logoData = '';
 
-    let agendaEvents = [
-      { date: "2026-09-10", startTime: "17:00", endTime: "19:00", text: "Conseil d'Administration d'installation (salle polyvalente)", isPedago: false },
-      { date: "2026-09-15", startTime: "09:00", endTime: "12:00", text: "Sortie pédagogique Musée d'Art Moderne — Classe de 2nde 3", isPedago: true },
-      { date: "2026-09-17", startTime: "14:00", endTime: "15:30", text: "Réunion des professeurs principaux de 2nde", isPedago: false },
-      { date: "2026-09-17", startTime: "16:00", endTime: "",      text: "Commission Hygiène et Sécurité (CHS)", isPedago: false },
-      { date: "2026-09-24", startTime: "13:30", endTime: "17:00", text: "Intervention Sécurité Routière & Ateliers pour les élèves de 1ère", isPedago: true }
-    ];
+    let agendaEvents = [];
+    let stageBlocks = [];
+    let travelBlocks = [];
+    let actuBlocks = [];
+    let rhBlocks = [];
 
-    let stageBlocks = [
-      { nature: "PFMP", period: "Du 21 septembre au 16 octobre 2026", classes: "Terminale Bac Pro MELEC & AGOrA", details: "Suivi des visites en entreprise à planifier via Pronote." }
-    ];
-
-    let travelBlocks = [
-      {
-        nature: "Voyage scolaire",
-        period: "Du 12 au 17 octobre 2026",
-        destination: "Barcelone (Espagne)",
-        classes: "1ère Euro Espagnol (34 élèves)",
-        referents: "Mme Garcia (Espagnol)",
-        participants: "M. Martin (Histoire-Géo), M. Dupont (EPS)",
-        details: "Hébergement en familles d'accueil. Départ en car le lundi à 06h00."
-      }
-    ];
-
-    let actuBlocks = [
-      { badge: "Important", title: "Procédure d'Organisation des Sorties", body: "Les dossiers doivent être déposés au secrétariat de direction au plus tard le 15 octobre via le formulaire RH.", attachment: "formulaire_demande_sortie_2026.pdf" }
-    ];
-
-    let rhBlocks = [
-      { badge: "Formation", title: "Plan Académique de Formation (PAF)", body: "La campagne d'inscription est ouverte. Pensez à faire valider vos demandes avant la clôture du serveur.", attachment: "catalogue_formations_paf.pdf" }
-    ];
-
+    // Sauvegarde dans le localStorage
     function saveDraftToStorage() {
       const data = {
         primaryColor: document.getElementById('in-color-primary').value,
@@ -443,6 +420,7 @@
       }
     }
 
+    // Chargement depuis le localStorage
     function loadDraftFromStorage() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (!saved) return false;
@@ -455,6 +433,7 @@
       }
     }
 
+    // Applique un objet de données à l'interface
     function applyDataToApp(data) {
       if (data.primaryColor) document.getElementById('in-color-primary').value = data.primaryColor;
       if (data.accentColor) document.getElementById('in-color-accent').value = data.accentColor;
@@ -483,6 +462,76 @@
       renderNewsletter();
     }
 
+    // CHARGE LE JEU DE DONNÉES TEST / EXEMPLE COMPLET
+    function loadExampleData() {
+      const example = {
+        primaryColor: "#0f172a",
+        accentColor: "#2563eb",
+        pedagoColor: "#7c3aed",
+        school: "Lycée Polyvalent Jean Moulin",
+        title: "La Lettre des Personnels — Septembre 2026",
+        editoHeader: "Note de la Direction",
+        editorial: "Chers collègues, bienvenue à toutes et tous pour cette nouvelle rentrée scolaire. Vous trouverez ci-dessous le calendrier des premières instances, les consignes administratives ainsi que les informations relatives aux projets pédagogiques et mobilités en cours.",
+        agendaHeader: "📅 Agenda des Instances, Réunions & Projets",
+        stageHeader: "🎓 Périodes de Formation en Milieu Professionnel & Stages",
+        travelHeader: "🌍 Voyages scolaires & Accueil d'élèves extérieurs",
+        actuHeader: "📌 Consignes & Organisation",
+        rhHeader: "👥 Notes RH & Services Généraux",
+        btnLabel: "Accéder à l'Espace ENT de l'établissement",
+        link: "https://ent.mon-etablissement.fr",
+        bannerData: "",
+        logoData: "",
+        agendaEvents: [
+          { date: "2026-09-10", startTime: "17:00", endTime: "19:00", text: "Conseil d'Administration d'installation (salle polyvalente)", isPedago: false },
+          { date: "2026-09-15", startTime: "09:00", endTime: "12:00", text: "Sortie pédagogique Musée d'Art Contemporain — Classe de 2nde 3", isPedago: true },
+          { date: "2026-09-17", startTime: "14:00", endTime: "15:30", text: "Réunion de coordination des professeurs principaux de 2nde", isPedago: false },
+          { date: "2026-09-17", startTime: "16:00", endTime: "",      text: "Commission Hygiène et Sécurité (CHS)", isPedago: false },
+          { date: "2026-09-24", startTime: "13:30", endTime: "17:00", text: "Ateliers Sécurité Routière & Gestes qui sauvent pour les 1ères", isPedago: true }
+        ],
+        stageBlocks: [
+          {
+            nature: "PFMP",
+            period: "Du 21 septembre au 16 octobre 2026",
+            classes: "Terminale Bac Pro MELEC & AGOrA",
+            details: "Suivi des visites en entreprise à planifier via Pronote. Conventions signées disponibles au DDFPT."
+          }
+        ],
+        travelBlocks: [
+          {
+            nature: "Voyage scolaire",
+            period: "Du 12 au 17 octobre 2026",
+            destination: "Barcelone (Espagne)",
+            classes: "1ère Euro Espagnol (34 élèves)",
+            referents: "Mme Garcia (Espagnol)",
+            participants: "M. Martin (Histoire-Géo), M. Dupont (EPS)",
+            details: "Hébergement en familles hôtesses. Départ prévu en autocar le lundi à 06h00."
+          }
+        ],
+        actuBlocks: [
+          {
+            badge: "Important",
+            title: "Procédure d'Organisation des Sorties Pédagogiques",
+            body: "Les dossiers de demande de sortie scolaire doivent obligatoirement être déposés au secrétariat de direction au moins 3 semaines à l'avance pour validation en CA.",
+            attachment: "formulaire_demande_sortie_2026.pdf"
+          }
+        ],
+        rhBlocks: [
+          {
+            badge: "Formation",
+            title: "Campagne du Plan Académique de Formation (PAF)",
+            body: "Le serveur d'inscription aux formations académiques fermera le 30 septembre. Pensez à faire valider vos candidatures auprès du chef d'établissement.",
+            attachment: "catalogue_formations_paf.pdf"
+          }
+        ]
+      };
+
+      applyDataToApp(example);
+      saveDraftToStorage();
+      const status = document.getElementById('save-status');
+      if (status) status.textContent = '● Exemple chargé';
+    }
+
+    // Export en fichier physique .json
     function exportDataToFile() {
       const data = {
         version: "epistola-1.0",
@@ -519,6 +568,7 @@
       URL.revokeObjectURL(a.href);
     }
 
+    // Import depuis un fichier .json
     function importDataFromFile(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -537,14 +587,12 @@
       event.target.value = '';
     }
 
-    // Réinitialisation complète : vide toutes les données pour repartir de zéro
+    // Réinitialise tout à blanc
     function resetToDefault() {
       if (!confirm("Voulez-vous vider entièrement le document pour en créer un nouveau ? Toutes les informations saisies seront effacées.")) return;
       
-      // 1. Suppression du cache local
       localStorage.removeItem(STORAGE_KEY);
 
-      // 2. Réinitialisation des images et tableaux de données
       bannerData = '';
       logoData = '';
       agendaEvents = [];
@@ -553,20 +601,17 @@
       actuBlocks = [];
       rhBlocks = [];
 
-      // 3. Vidage des sélecteurs de fichiers
       const bannerFile = document.getElementById('in-banner-file');
       if (bannerFile) bannerFile.value = '';
       const logoFile = document.getElementById('in-logo-file');
       if (logoFile) logoFile.value = '';
 
-      // 4. Vidage des champs textuels principaux
       document.getElementById('in-school').value = '';
       document.getElementById('in-title').value = '';
       document.getElementById('in-editorial').value = '';
       document.getElementById('in-btn-label').value = '';
       document.getElementById('in-link').value = '';
 
-      // 5. Restauration des titres génériques de section par défaut
       document.getElementById('in-edito-header').value = 'Note de la Direction';
       document.getElementById('in-agenda-header').value = '📅 Agenda des Instances, Réunions & Projets';
       document.getElementById('in-stage-header').value = '🎓 Périodes de Formation en Milieu Professionnel & Stages';
@@ -574,19 +619,15 @@
       document.getElementById('in-actu-header').value = '📌 Consignes & Organisation';
       document.getElementById('in-rh-header').value = '👥 Notes RH & Services Généraux';
 
-      // 6. Couleurs par défaut
       document.getElementById('in-color-primary').value = '#0f172a';
       document.getElementById('in-color-accent').value = '#2563eb';
       document.getElementById('in-color-pedago').value = '#7c3aed';
 
-      // 7. Mise à jour de l'interface
       renderEditorBlocks();
       renderNewsletter();
 
       const status = document.getElementById('save-status');
-      if (status) {
-        status.textContent = '● Nouveau document vierge';
-      }
+      if (status) status.textContent = '● Nouveau document vierge';
     }
 
     function saveAndRender() {
@@ -1105,8 +1146,8 @@
               <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td valign="middle">
-                    <p style="color: #94a3b8; font-size: 11px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 4px 0;">Communication Interne — ${school}</p>
-                    <h1 style="color: #ffffff; font-size: 18.5px; font-weight: 700; margin: 0;">${title}</h1>
+                    <p style="color: #94a3b8; font-size: 11px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 4px 0;">Communication Interne — ${school || 'Établissement'}</p>
+                    <h1 style="color: #ffffff; font-size: 18.5px; font-weight: 700; margin: 0;">${title || 'La Lettre des Personnels'}</h1>
                   </td>
                   ${logoData ? `
                   <td align="right" valign="middle" style="width: 75px; padding-left: 15px;">
@@ -1119,12 +1160,14 @@
           </tr>
 
           <!-- MOT DE LA DIRECTION -->
+          ${editorial ? `
           <tr class="pdf-no-break">
             <td style="padding: 24px 28px; background-color: #ffffff;">
               ${editoHeader ? `<h2 style="color: ${primaryColor}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">${editoHeader}</h2>` : ''}
               <p style="color: #334155; font-size: 13.5px; line-height: 1.6; margin: 0;">${editorial}</p>
             </td>
           </tr>
+          ` : ''}
 
           <!-- AGENDA AVEC ACTIONS PÉDAGOGIQUES COLORÉES -->
           ${agendaRowsHTML}
@@ -1157,7 +1200,7 @@
           <!-- PIED DE PAGE -->
           <tr class="pdf-no-break">
             <td style="background-color: #f8fafc; padding: 12px 28px; text-align: center; border-top: 1px solid #e2e8f0;">
-              <p style="color: #94a3b8; font-size: 11px; margin: 0;">Diffusion interne — ${school} — Réservé aux personnels de l'établissement.</p>
+              <p style="color: #94a3b8; font-size: 11px; margin: 0;">Diffusion interne — ${school || 'Établissement'} — Réservé aux personnels de l'établissement.</p>
             </td>
           </tr>
 
@@ -1224,9 +1267,9 @@
       });
     }
 
+    // Chargement automatique au démarrage : brouillon local ou exemple complet
     if (!loadDraftFromStorage()) {
-      renderEditorBlocks();
-      renderNewsletter();
+      loadExampleData();
     }
   </script>
 </body>
