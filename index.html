@@ -222,7 +222,7 @@
       <button class="btn-tool" onclick="exportDataToFile()" title="Enregistrer l'état du document dans un fichier">💾 Exporter sauvegarde (.json)</button>
       <button class="btn-tool" onclick="document.getElementById('import-file-input').click()" title="Reprendre un document précédemment enregistré">📂 Charger document</button>
       <input type="file" id="import-file-input" accept=".json" style="display:none;" onchange="importDataFromFile(event)">
-      <button class="btn-tool" onclick="resetToDefault()" style="color:#ef4444;" title="Remettre à zéro">🔄 Nouveau</button>
+      <button class="btn-tool" onclick="resetToDefault()" style="color:#ef4444;" title="Vider complètement le document">🔄 Nouveau</button>
       <div class="status-save" id="save-status">● Brouillon synchronisé</div>
     </div>
 
@@ -306,7 +306,7 @@
 
     <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
 
-    <!-- NOUVELLE SECTION VOYAGES & MOBILITÉS / ACCUEIL D'ÉLÈVES -->
+    <!-- SECTION VOYAGES & ACCUEIL -->
     <div class="form-group">
       <label>Titre de la section Voyages & Accueil d'élèves</label>
       <input type="text" id="in-travel-header" value="🌍 Voyages scolaires & Accueil d'élèves extérieurs" oninput="saveAndRender()">
@@ -387,7 +387,6 @@
       { nature: "PFMP", period: "Du 21 septembre au 16 octobre 2026", classes: "Terminale Bac Pro MELEC & AGOrA", details: "Suivi des visites en entreprise à planifier via Pronote." }
     ];
 
-    // Données par défaut pour les voyages et mobilités
     let travelBlocks = [
       {
         nature: "Voyage scolaire",
@@ -474,11 +473,11 @@
 
       bannerData = data.bannerData || '';
       logoData = data.logoData || '';
-      if (Array.isArray(data.agendaEvents)) agendaEvents = data.agendaEvents;
-      if (Array.isArray(data.stageBlocks)) stageBlocks = data.stageBlocks;
-      if (Array.isArray(data.travelBlocks)) travelBlocks = data.travelBlocks;
-      if (Array.isArray(data.actuBlocks)) actuBlocks = data.actuBlocks;
-      if (Array.isArray(data.rhBlocks)) rhBlocks = data.rhBlocks;
+      agendaEvents = Array.isArray(data.agendaEvents) ? data.agendaEvents : [];
+      stageBlocks = Array.isArray(data.stageBlocks) ? data.stageBlocks : [];
+      travelBlocks = Array.isArray(data.travelBlocks) ? data.travelBlocks : [];
+      actuBlocks = Array.isArray(data.actuBlocks) ? data.actuBlocks : [];
+      rhBlocks = Array.isArray(data.rhBlocks) ? data.rhBlocks : [];
 
       renderEditorBlocks();
       renderNewsletter();
@@ -538,10 +537,56 @@
       event.target.value = '';
     }
 
+    // Réinitialisation complète : vide toutes les données pour repartir de zéro
     function resetToDefault() {
-      if (!confirm("Voulez-vous réinitialiser le document ? Toutes les modifications non exportées seront perdues.")) return;
+      if (!confirm("Voulez-vous vider entièrement le document pour en créer un nouveau ? Toutes les informations saisies seront effacées.")) return;
+      
+      // 1. Suppression du cache local
       localStorage.removeItem(STORAGE_KEY);
-      location.reload();
+
+      // 2. Réinitialisation des images et tableaux de données
+      bannerData = '';
+      logoData = '';
+      agendaEvents = [];
+      stageBlocks = [];
+      travelBlocks = [];
+      actuBlocks = [];
+      rhBlocks = [];
+
+      // 3. Vidage des sélecteurs de fichiers
+      const bannerFile = document.getElementById('in-banner-file');
+      if (bannerFile) bannerFile.value = '';
+      const logoFile = document.getElementById('in-logo-file');
+      if (logoFile) logoFile.value = '';
+
+      // 4. Vidage des champs textuels principaux
+      document.getElementById('in-school').value = '';
+      document.getElementById('in-title').value = '';
+      document.getElementById('in-editorial').value = '';
+      document.getElementById('in-btn-label').value = '';
+      document.getElementById('in-link').value = '';
+
+      // 5. Restauration des titres génériques de section par défaut
+      document.getElementById('in-edito-header').value = 'Note de la Direction';
+      document.getElementById('in-agenda-header').value = '📅 Agenda des Instances, Réunions & Projets';
+      document.getElementById('in-stage-header').value = '🎓 Périodes de Formation en Milieu Professionnel & Stages';
+      document.getElementById('in-travel-header').value = '🌍 Voyages scolaires & Accueil d\'élèves extérieurs';
+      document.getElementById('in-actu-header').value = '📌 Consignes & Organisation';
+      document.getElementById('in-rh-header').value = '👥 Notes RH & Services Généraux';
+
+      // 6. Couleurs par défaut
+      document.getElementById('in-color-primary').value = '#0f172a';
+      document.getElementById('in-color-accent').value = '#2563eb';
+      document.getElementById('in-color-pedago').value = '#7c3aed';
+
+      // 7. Mise à jour de l'interface
+      renderEditorBlocks();
+      renderNewsletter();
+
+      const status = document.getElementById('save-status');
+      if (status) {
+        status.textContent = '● Nouveau document vierge';
+      }
     }
 
     function saveAndRender() {
@@ -669,7 +714,6 @@
       saveAndRender();
     }
 
-    // Gestion des Voyages et Mobilités
     function renderTravelEditor() {
       const container = document.getElementById('travel-container');
       container.innerHTML = travelBlocks.map((tr, i) => `
