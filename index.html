@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Epistola - Lettre d'information pour EPLE</title>
+  <title>Epistola - Infolettre pour EPLE</title>
   <style>
     /* TYPOGRAPHIE INSTITUTIONNELLE AVEC SUPPORT EMOJIS COULEUR */
     * { 
@@ -361,7 +361,7 @@
 
   <!-- ÉDITEUR -->
   <div class="editor">
-    <h2>Epistola <span style="font-size:0.75rem; font-weight:500; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">Édition EPLE Pro</span></h2>
+    <h2>Epistola <span style="font-size:0.75rem; font-weight:500; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">Infolettre pour EPLE</span></h2>
     
     <div class="storage-bar">
       <button class="btn-tool" onclick="exportDataToFile()" title="Enregistrer l'état du document dans un fichier">💾 Sauvegarder (.json)</button>
@@ -823,7 +823,6 @@
       document.getElementById('in-btn-label').value = '';
       document.getElementById('in-link').value = '';
 
-      // Rétablissement des en-têtes avec leurs emojis officiels
       document.getElementById('in-edito-header').value = '✍️ Note de la Direction';
       document.getElementById('in-agenda-header').value = '📅 Agenda des Instances & Réunions';
       document.getElementById('in-stage-header').value = '🎓 Périodes de Formation en Milieu Professionnel & Stages';
@@ -1198,7 +1197,7 @@
       return rowsHTML;
     }
 
-    /* RENDU GLOBAL : EMOJIS CONSERVÉS DANS LES TITRES DE L'APERÇU ET DE L'IMPRESSION */
+    /* RENDU GLOBAL AVEC EMOJIS AUX TITRES */
     function renderNewsletter() {
       const primaryColor = document.getElementById('in-color-primary').value;
       const accentColor = document.getElementById('in-color-accent').value;
