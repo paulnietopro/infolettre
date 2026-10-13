@@ -1121,7 +1121,7 @@
       return dateStr;
     }
 
-    /* AGENDA */
+    /* AGENDA : S'IL N'Y A PAS D'HEURE, LE CONTENU SE CALE DIRECTEMENT À GAUCHE */
     function buildAgendaRowsHTML(accentColor, pedagoColor, agendaHeader, primaryColor) {
       const validEvents = agendaEvents.filter(e => e.text && e.text.trim() !== '');
       if (validEvents.length === 0) return '';
@@ -1156,22 +1156,35 @@
 
         const itemsHTML = dayEvents.map(ev => {
           const currentColor = ev.isPedago ? pedagoColor : accentColor;
-          let timeBadge = '';
-
+          
+          // 1. Colonne Heure : uniquement générée si startTime existe
+          let timeCell = '';
           if (ev.startTime) {
             let labelTime = ev.startTime.replace(':', 'h');
             if (ev.endTime) {
               labelTime += `–${ev.endTime.replace(':', 'h')}`;
             }
-            timeBadge = `<span style="display:inline-block; font-variant-numeric: tabular-nums; background-color:${currentColor} !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color:#ffffff !important; font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:3px; margin-right:8px; white-space:nowrap;">${labelTime}</span>`;
+            timeCell = `
+              <div style="flex: 0 0 74px; width: 74px; margin-right: 8px;">
+                <span style="display: block; text-align: center; font-variant-numeric: tabular-nums; background-color:${currentColor} !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color:#ffffff !important; font-size:10px; font-weight:600; line-height: 17px; height: 17px; padding: 0 4px; border-radius: 4px; white-space:nowrap;">
+                  ${labelTime}
+                </span>
+              </div>
+            `;
           }
 
-          const pedagoTag = ev.isPedago ? `<span style="display:inline-block; background-color:${pedagoColor} !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color:#ffffff !important; font-size:9.5px; font-weight:700; padding:2px 6px; border-radius:3px; text-transform:uppercase; margin-right:6px; letter-spacing:0.3px;">ACTION</span>` : '';
+          // 2. Badge ACTION inséré en tête du texte sans décalage
+          const pedagoTag = ev.isPedago ? `
+            <span style="display: inline-block; vertical-align: top; background-color:${pedagoColor} !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color:#ffffff !important; font-size:9px; font-weight:700; line-height: 17px; height: 17px; padding: 0 5px; border-radius: 4px; text-transform:uppercase; letter-spacing:0.4px; margin-right: 6px;">
+              ACTION
+            </span>
+          ` : '';
 
+          // 3. Si timeCell est vide, flex: 1 démarre tout de suite à gauche
           return `
-            <div style="display:flex; align-items:flex-start; margin-bottom:6px;">
-              ${ev.startTime ? `<div style="flex-shrink:0;">${timeBadge}</div>` : ''}
-              <div style="color:#27272a; font-size:12.5px; line-height:1.45; font-weight:450;">
+            <div style="display: flex; align-items: flex-start; margin-bottom: 5px; min-height: 18px;">
+              ${timeCell}
+              <div style="flex: 1; color: #27272a; font-size: 12.5px; line-height: 17px; font-weight: 450; word-break: break-word;">
                 ${pedagoTag}${ev.text}
               </div>
             </div>
@@ -1182,7 +1195,7 @@
           <tr class="pdf-no-break">
             <td style="padding: 4px 28px 6px 28px;">
               <div class="card-block" style="background-color: #fafbfc !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; border: 1px solid #e2e8f0; border-left: 3.5px solid ${accentColor} !important; border-radius: 4px; padding: 10px 14px;">
-                <div style="font-size:11.5px; font-weight:700; color:#0f172a; text-transform:capitalize; padding-bottom:4px; margin-bottom:6px; border-bottom:1px solid #edf2f7;">
+                <div style="font-size:11.5px; font-weight:700; color:#0f172a; text-transform:capitalize; padding-bottom:5px; margin-bottom:7px; border-bottom:1px solid #edf2f7;">
                   📅 ${dateDisplay}
                 </div>
                 <div style="padding-left:1px;">
@@ -1197,7 +1210,7 @@
       return rowsHTML;
     }
 
-    /* RENDU GLOBAL AVEC EMOJIS AUX TITRES */
+    /* RENDU GLOBAL AVEC MISE À JOUR DYNAMIQUE DU TITRE DE L'ONGLET */
     function renderNewsletter() {
       const primaryColor = document.getElementById('in-color-primary').value;
       const accentColor = document.getElementById('in-color-accent').value;
@@ -1214,6 +1227,12 @@
       const newsletterHeader = document.getElementById('in-newsletter-header').value;
       const btnLabel = document.getElementById('in-btn-label').value;
       const link = document.getElementById('in-link').value;
+
+      if (title && title.trim() !== '') {
+        document.title = title.trim();
+      } else {
+        document.title = "Epistola - Infolettre pour EPLE";
+      }
 
       const agendaRowsHTML = buildAgendaRowsHTML(accentColor, pedagoColor, agendaHeader, primaryColor);
 
