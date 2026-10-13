@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Epistola - Lettre d'information pour EPLE</title>
   <style>
-    /* TYPOGRAPHIE INSTITUTIONNELLE */
+    /* TYPOGRAPHIE INSTITUTIONNELLE AVEC SUPPORT EMOJIS COULEUR */
     * { 
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
-      font-family: 'Aptos', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Aptos', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';
       -webkit-font-smoothing: antialiased;
     }
     
@@ -427,7 +427,7 @@
       <div class="editor-content">
         <div class="form-group">
           <label>Titre du bloc</label>
-          <input type="text" id="in-edito-header" value="Note de la Direction" oninput="saveAndRender()">
+          <input type="text" id="in-edito-header" value="✍️ Note de la Direction" oninput="saveAndRender()">
         </div>
         <div class="form-group" style="margin-bottom:0;">
           <label>Message aux personnels</label>
@@ -442,7 +442,7 @@
       <div class="editor-content">
         <div class="form-group">
           <label>Titre de section</label>
-          <input type="text" id="in-agenda-header" value="Agenda des Instances & Réunions" oninput="saveAndRender()">
+          <input type="text" id="in-agenda-header" value="📅 Agenda des Instances & Réunions" oninput="saveAndRender()">
         </div>
         <button class="btn-add" onclick="addAgendaEvent()">+ Ajouter une date / événement</button>
         <div id="agenda-container"></div>
@@ -455,7 +455,7 @@
       <div class="editor-content">
         <div class="form-group">
           <label>Titre de section</label>
-          <input type="text" id="in-stage-header" value="Périodes de Formation en Milieu Professionnel & Stages" oninput="saveAndRender()">
+          <input type="text" id="in-stage-header" value="🎓 Périodes de Formation en Milieu Professionnel & Stages" oninput="saveAndRender()">
         </div>
         <button class="btn-add" onclick="addStageBlock()">+ Ajouter une période de stage</button>
         <div id="stage-container"></div>
@@ -468,7 +468,7 @@
       <div class="editor-content">
         <div class="form-group">
           <label>Titre de section</label>
-          <input type="text" id="in-travel-header" value="Voyages scolaires & Accueil d'élèves extérieurs" oninput="saveAndRender()">
+          <input type="text" id="in-travel-header" value="🌍 Voyages scolaires & Accueil d'élèves extérieurs" oninput="saveAndRender()">
         </div>
         <button class="btn-add" onclick="addTravelBlock()">+ Ajouter un voyage ou accueil</button>
         <div id="travel-container"></div>
@@ -481,7 +481,7 @@
       <div class="editor-content">
         <div class="form-group">
           <label>Titre de section</label>
-          <input type="text" id="in-actu-header" value="Consignes & Organisation interne" oninput="saveAndRender()">
+          <input type="text" id="in-actu-header" value="📌 Consignes & Organisation interne" oninput="saveAndRender()">
         </div>
         <button class="btn-add" onclick="addActuBlock()">+ Ajouter un point d'organisation</button>
         <div id="actu-container"></div>
@@ -494,20 +494,20 @@
       <div class="editor-content">
         <div class="form-group">
           <label>Titre de section</label>
-          <input type="text" id="in-rh-header" value="Ressources Humaines & Services Généraux" oninput="saveAndRender()">
+          <input type="text" id="in-rh-header" value="👥 Ressources Humaines & Services Généraux" oninput="saveAndRender()">
         </div>
         <button class="btn-add" onclick="addRhBlock()">+ Ajouter une information RH</button>
         <div id="rh-container"></div>
       </div>
     </details>
 
-    <!-- 8. NEWSLETTERS & RESSOURCES EXTERNES (NOUVEAU) -->
+    <!-- 8. NEWSLETTERS & RESSOURCES EXTERNES -->
     <details class="editor-section">
       <summary class="editor-summary">🌐 Veille & Lettres d'information externes</summary>
       <div class="editor-content">
         <div class="form-group">
           <label>Titre de section</label>
-          <input type="text" id="in-newsletter-header" value="Veille, Publications & Lettres externes" oninput="saveAndRender()">
+          <input type="text" id="in-newsletter-header" value="🌐 Veille, Publications & Lettres externes" oninput="saveAndRender()">
         </div>
         <button class="btn-add" onclick="addNewsletterBlock()">+ Ajouter une lettre / ressource</button>
         <div id="newsletter-container"></div>
@@ -578,7 +578,7 @@
     let travelBlocks = [];
     let actuBlocks = [];
     let rhBlocks = [];
-    let newsletterBlocks = []; // Stockage des liens vers newsletters externes
+    let newsletterBlocks = [];
 
     let currentZoom = 0.85;
 
@@ -680,14 +680,14 @@
         pedagoColor: "#6d28d9",
         school: "Lycée Polyvalent Jean Moulin",
         title: "La Lettre des Personnels — Octobre 2026",
-        editoHeader: "Note de la Direction",
+        editoHeader: "✍️ Note de la Direction",
         editorial: "Chères et chers collègues, bienvenue à toutes et tous pour cette nouvelle rentrée. Vous trouverez dans cette édition le calendrier des instances du trimestre, les consignes d'organisation des projets ainsi que le suivi des mobilités et des stages en cours.",
-        agendaHeader: "Agenda des Instances & Réunions",
-        stageHeader: "Périodes de Formation en Milieu Professionnel & Stages",
-        travelHeader: "Voyages scolaires & Accueil d'élèves extérieurs",
-        actuHeader: "Consignes & Organisation interne",
-        rhHeader: "Ressources Humaines & Services Généraux",
-        newsletterHeader: "Veille, Publications & Lettres externes",
+        agendaHeader: "📅 Agenda des Instances & Réunions",
+        stageHeader: "🎓 Périodes de Formation en Milieu Professionnel & Stages",
+        travelHeader: "🌍 Voyages scolaires & Accueil d'élèves extérieurs",
+        actuHeader: "📌 Consignes & Organisation interne",
+        rhHeader: "👥 Ressources Humaines & Services Généraux",
+        newsletterHeader: "🌐 Veille, Publications & Lettres externes",
         btnLabel: "Accéder à l'Espace ENT / Pronote de l'établissement",
         link: "https://ent.mon-etablissement.fr",
         bannerData: "",
@@ -822,6 +822,16 @@
       document.getElementById('in-editorial').value = '';
       document.getElementById('in-btn-label').value = '';
       document.getElementById('in-link').value = '';
+
+      // Rétablissement des en-têtes avec leurs emojis officiels
+      document.getElementById('in-edito-header').value = '✍️ Note de la Direction';
+      document.getElementById('in-agenda-header').value = '📅 Agenda des Instances & Réunions';
+      document.getElementById('in-stage-header').value = '🎓 Périodes de Formation en Milieu Professionnel & Stages';
+      document.getElementById('in-travel-header').value = '🌍 Voyages scolaires & Accueil d\'élèves extérieurs';
+      document.getElementById('in-actu-header').value = '📌 Consignes & Organisation interne';
+      document.getElementById('in-rh-header').value = '👥 Ressources Humaines & Services Généraux';
+      document.getElementById('in-newsletter-header').value = '🌐 Veille, Publications & Lettres externes';
+
       renderEditorBlocks();
       renderNewsletter();
     }
@@ -987,7 +997,6 @@
       saveAndRender();
     }
 
-    // Gestion du nouveau bloc : Newsletters & Liens externes
     function renderNewsletterEditor() {
       const container = document.getElementById('newsletter-container');
       container.innerHTML = newsletterBlocks.map((nl, i) => `
@@ -1189,7 +1198,7 @@
       return rowsHTML;
     }
 
-    /* RENDU GLOBAL AVEC SECTION NEWSLETTERS EXTERNES */
+    /* RENDU GLOBAL : EMOJIS CONSERVÉS DANS LES TITRES DE L'APERÇU ET DE L'IMPRESSION */
     function renderNewsletter() {
       const primaryColor = document.getElementById('in-color-primary').value;
       const accentColor = document.getElementById('in-color-accent').value;
@@ -1328,7 +1337,7 @@
         </tr>
       `).join('');
 
-      // NEWSLETTERS & RESSOURCES EXTERNES (NOUVEAU)
+      // NEWSLETTERS & RESSOURCES EXTERNES
       const validNewsletters = newsletterBlocks.filter(nl => nl.name && nl.name.trim() !== '');
       const newsletterHeaderHTML = (validNewsletters.length > 0 && newsletterHeader) ? `
         <tr class="pdf-no-break">
@@ -1359,7 +1368,7 @@
       const schoolName = school || 'Établissement';
 
       const htmlTemplate = `
-        <table width="${documentWidth}" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; font-family: 'Aptos', 'Segoe UI', -apple-system, sans-serif; text-align: left; margin: 0 auto; color: #1e293b; border-collapse: collapse;">
+        <table width="${documentWidth}" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; font-family: 'Aptos', 'Segoe UI', -apple-system, sans-serif, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji'; text-align: left; margin: 0 auto; color: #1e293b; border-collapse: collapse;">
           
           <!-- CORPS DU DOCUMENT -->
           <tbody>
